@@ -1,0 +1,12 @@
+awk '$2{print $1,$2} $3{print $1,$3}' wave.dat > new.dat
+
+gnuplot
+set terminal eps
+set output "demo.eps"
+set xlabel "LABEL"
+set ylabel "LABEL"
+set title "TITLE"
+plot "new.dat"
+quit
+
+plot "new.dat","wave.dat"
