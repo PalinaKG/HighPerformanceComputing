@@ -49,12 +49,13 @@ void matmult_nmk(int m, int n, int k, double **A, double **B, double **C){
 	
    	int i, j, l;
    	double sum;
-    
+    /*
    	printf("A\n");
    	mat_print(m,k,A);
    	printf("B\n");
 	mat_print(k,n,B);
-	
+	*/
+
 	for (l = 0; l < n; l++)
 	{	
 	for (j = 0; j < m; j++)
@@ -70,13 +71,154 @@ void matmult_nmk(int m, int n, int k, double **A, double **B, double **C){
 
 
 
-
-   
+	/*
     printf("C\n");
     mat_print(m,n,C); 
-   
+   	*/
 
 
+}
+
+
+void matmult_nkm(int m, int n, int k, double **A, double **B, double **C){
+	
+   	int i, j, l;
+   	double sum;
+    /*
+   	printf("A\n");
+   	mat_print(m,k,A);
+   	printf("B\n");
+	mat_print(k,n,B);
+	*/
+	
+	for (int i = 0; i < m; i++)
+    {
+        for (int j=0; j < n; j++)
+        {
+				C[i][j] = 0.0;
+        }
+    }
+
+	for (l = 0; l < n; l++)
+	{	
+	for (j = 0; j < k; j++)
+        {
+            for (i = 0; i < m; i++)
+            {
+                C[i][l] +=  A[i][j] * B[j][l]; 
+            }
+        }
+    }
+	/*	
+    printf("C\n");
+    mat_print(m,n,C); 
+   	*/
+}
+
+void matmult_mkn(int m, int n, int k, double **A, double **B, double **C){
+	
+   	int i, j, l;
+   	double sum;
+    /*
+   	printf("A\n");
+   	mat_print(m,k,A);
+   	printf("B\n");
+	mat_print(k,n,B);
+	*/
+
+	
+	for (int i = 0; i < m; i++)
+    {
+        for (int j=0; j < n; j++)
+        {
+				C[i][j] = 0.0;
+        }
+    }
+
+	for (l = 0; l < m; l++)
+	{	
+	for (j = 0; j < k; j++)
+        {
+            for (i = 0; i < n; i++)
+            {
+                C[l][i] +=  A[l][j] * B[j][i]; 
+            }
+        }
+    }
+	/*
+    printf("C\n");
+    mat_print(m,n,C); 
+   	*/
+}
+
+void matmult_kmn(int m, int n, int k, double **A, double **B, double **C){
+	
+   	int i, j, l;
+   	double sum;
+    /*
+   	printf("A\n");
+   	mat_print(m,k,A);
+   	printf("B\n");
+	mat_print(k,n,B);
+	*/
+	
+	for (int i = 0; i < m; i++)
+    {
+        for (int j=0; j < n; j++)
+        {
+				C[i][j] = 0.0;
+        }
+    }
+
+	for (l = 0; l < k; l++)
+	{	
+	for (j = 0; j < m; j++)
+        {
+            for (i = 0; i < n; i++)
+            {
+                C[j][i] +=  A[j][l] * B[l][i]; 
+            }
+        }
+    }
+	/*	
+    printf("C\n");
+    mat_print(m,n,C); 
+   	*/
+}
+
+void matmult_knm(int m, int n, int k, double **A, double **B, double **C){
+	
+   	int i, j, l;
+   	double sum;
+    /*
+   	printf("A\n");
+   	mat_print(m,k,A);
+   	printf("B\n");
+	mat_print(k,n,B);
+	*/
+	
+	for (int i = 0; i < m; i++)
+    {
+        for (int j=0; j < n; j++)
+        {
+				C[i][j] = 0.0;
+        }
+    }
+
+	for (l = 0; l < k; l++)
+	{	
+	for (j = 0; j < n; j++)
+        {
+            for (i = 0; i < m; i++)
+            {
+                C[i][j] +=  A[i][l] * B[l][j]; 
+            }
+        }
+    }
+	/*	
+    printf("C\n");
+    mat_print(m,n,C); 
+   	*/
 }
 
 
