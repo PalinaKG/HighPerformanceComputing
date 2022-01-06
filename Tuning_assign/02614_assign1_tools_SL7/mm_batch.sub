@@ -38,7 +38,7 @@ PERM="mnk nmk nkm mkn kmn knm"
 export MATMULT_COMPARE=0
 
 # start the collect command with the above settings
-lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)'
+lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)|cache'
 module load gcc
 make clean
 make
