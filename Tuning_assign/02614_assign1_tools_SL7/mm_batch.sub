@@ -24,11 +24,11 @@ EXECUTABLE=matmult_c.gcc
 
 # define the mkn values in the MKN variable
 #
-SIZES="100 200 500"
+SIZES="12 24 36 48 75 102 124 200 250 350 480 730 800 1000 1200 1500"
 
 # define the permutation type in PERM
 #
-PERM="mkn knm nkm"
+PERM="mnk nmk nkm mkn kmn knm"
 
 # uncomment and set a reasonable BLKSIZE for the blk version
 #
@@ -39,12 +39,15 @@ export MATMULT_COMPARE=0
 
 # start the collect command with the above settings
 lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)'
+module load gcc
+make clean
+make
 
 for P in $PERM
 do
-echo $P
-for S in $SIZES
-do
-    ./$EXECUTABLE $P $S $S $S $BLKSIZE | grep -v CPU >> $P.dat
-done
+	rm Control_Data/$P".dat"
+	for S in $SIZES
+	do
+    		./$EXECUTABLE $P $S $S $S $BLKSIZE | grep -v CPU >> Control_Data/$P".dat"
+	done
 done
