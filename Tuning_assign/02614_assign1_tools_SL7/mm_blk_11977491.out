@@ -11,18 +11,48 @@ Loaded module: gcc/6.3.0
 
 Loading gcc/6.3.0
   Loading requirement: binutils/2.29
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
+Usage: ./matmult_c.gcc version m k n [bs]
 
 ------------------------------------------------------------
 Sender: LSF System <lsfadmin@hpc.dtu.dk>
-Subject: Job 11977094: <mm_unroll> in cluster <dcc> Done
+Subject: Job 11977491: <mm_blk> in cluster <dcc> Exited
 
-Job <mm_unroll> was submitted from host <n-62-30-8> by user <s212415> in cluster <dcc> at Thu Jan  6 14:46:29 2022
-Job was executed on host(s) <n-62-21-75>, in queue <hpcintro>, as user <s212415> in cluster <dcc> at Thu Jan  6 14:46:38 2022
+Job <mm_blk> was submitted from host <n-62-30-8> by user <s212415> in cluster <dcc> at Thu Jan  6 15:00:26 2022
+Job was executed on host(s) <n-62-21-75>, in queue <hpcintro>, as user <s212415> in cluster <dcc> at Thu Jan  6 15:00:28 2022
 </zhome/7a/e/164714> was used as the home directory.
 </zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7> was used as the working directory.
-Started at Thu Jan  6 14:46:38 2022
-Terminated at Thu Jan  6 14:46:40 2022
-Results reported at Thu Jan  6 14:46:40 2022
+Started at Thu Jan  6 15:00:28 2022
+Terminated at Thu Jan  6 15:00:29 2022
+Results reported at Thu Jan  6 15:00:29 2022
 
 Your job looked like:
 
@@ -35,8 +65,8 @@ Your job looked like:
 # queue
 #
 #
-#BSUB -J mm_unroll
-#BSUB -o mm_unroll_%J.out
+#BSUB -J mm_blk
+#BSUB -o mm_blk_%J.out
 #BSUB -q hpcintro
 #BSUB -n 1
 #BSUB -R "rusage[mem=2048]"
@@ -59,14 +89,11 @@ SIZES="100 200 500"
 
 # define the permutation type in PERM
 #
-PERM="mnk nmk nkm mkn kmn knm"
-
-# diffrent compiler options
-UNROLl="0 1 2 3 4 5 6 7 8 9 10"
+PERM="blk"
 
 # uncomment and set a reasonable BLKSIZE for the blk version
 #
-# BLKSIZE=1
+BLKSIZE="1 2 3 4 5 6 7 8 9 10"
 
 # enable(1)/disable(0) result checking
 export MATMULT_COMPARE=0
@@ -74,19 +101,22 @@ export MATMULT_COMPARE=0
 # start the collect command with the above settings
 lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)'
 module load gcc
-for n in $UNROLL
+for blk in $BLKSIZE
 do
-	make clean 
-	make OPT="-g -funroll-loops --param max-unroll-times="$n
+	File_NAME="blk_"$blk".dat"
+	rm BlockS_Data/$File_NAME
+	for S in $SIZES
+	do
+		./$EXECUTABLE $P $S $S $S $BLKSIZE  | grep -v CPU >> BlockS_Data/$File_NAME
 
 (... more ...)
 ------------------------------------------------------------
 
-Successfully completed.
+Exited with exit code 1.
 
 Resource usage summary:
 
-    CPU time :                                   0.40 sec.
+    CPU time :                                   0.59 sec.
     Max Memory :                                 -
     Average Memory :                             -
     Total Requested Memory :                     2048.00 MB
@@ -94,8 +124,8 @@ Resource usage summary:
     Max Swap :                                   -
     Max Processes :                              -
     Max Threads :                                -
-    Run time :                                   1 sec.
-    Turnaround time :                            11 sec.
+    Run time :                                   70 sec.
+    Turnaround time :                            3 sec.
 
 The output (if any) is above this job summary.
 

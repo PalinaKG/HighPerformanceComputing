@@ -13,4 +13,4 @@ Loading gcc/6.3.0
   Loading requirement: binutils/2.29
 gcc -g -funroll-loops --param max-unroll-times=0 -fPIC	    -c -o matmult_fun.o matmult_fun.c
 gcc -o libmatmult.so -shared  matmult_fun.o -L/usr/lib64/atlas -lsatlas
-rm: cannot remove ‘Compile_Data/mnk_.dat’: No such file or directory
+rm: cannot remove ‘Unroll_Data/mnk_0.dat’: No such file or directory

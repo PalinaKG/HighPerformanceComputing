@@ -50,8 +50,8 @@ do
 	make OPT="-g -funroll-loops --param max-unroll-times="$n
 	for P in $PERM
 	do
-		File_NAME=$P"_"$Comp".dat"
-		rm Compile_Data/$File_NAME
+		File_NAME=$P"_"$n".dat"
+		rm Unroll_Data/$File_NAME
 		for S in $SIZES
 		do
 	    		./$EXECUTABLE $P $S $S $S $BLKSIZE  | grep -v CPU >> Unroll_Data/$File_NAME
