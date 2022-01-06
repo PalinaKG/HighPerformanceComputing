@@ -24,6 +24,10 @@ void matmult_kmn(int m, int n, int k, double **A, double **B, double **C );
 
 void matmult_knm(int m, int n, int k, double **A, double **B, double **C);
 
+void matmult_blk(int m, int n, int k, double **A, double **B, double **C, int bs);
+
+int min(int a, int b);
+
 void mat_print(int m, int n, double **A);
 
 #endif

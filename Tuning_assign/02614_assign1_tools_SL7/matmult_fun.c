@@ -29,7 +29,7 @@ void matmult_nat(int m, int n, int k, double **A, double **B, double **C) {
    /*
     printf("C\n");
     mat_print(m,n,C); 
-   */
+  */ 
 }
 
 void matmult_lib(int m, int n, int k, double **A, double **B, double **C) {
@@ -219,6 +219,63 @@ void matmult_knm(int m, int n, int k, double **A, double **B, double **C){
     printf("C\n");
     mat_print(m,n,C); 
    	*/
+}
+
+
+void matmult_blk(int m, int n, int k, double **A, double **B, double **C, int bs){
+    int i, j, l, ii, jj, ll;
+    double sum;
+   /* 
+    printf("A\n");
+    mat_print(m,k,A);
+    printf("B\n");
+    mat_print(k,n,B);
+    */
+	for (int i = 0; i < m; i++)
+    {
+        for (int j=0; j < n; j++)
+        {
+				C[i][j] = 0.0;
+        }
+    }
+    
+
+	for (l = 0; l < m; l+=bs)
+    {
+        for (j = 0; j < n; j+=bs)
+        {
+            //sum = 0.0;
+            for (i = 0; i < k; i+=bs)
+            {
+            	for (ll = l; ll < min(l+bs,m); ll++)
+            	{
+					for (jj = j; jj < min(j+bs,n); jj++)
+					{
+                		for (ii = i; ii < min(i+bs,k); ii++)
+						{
+							C[ll][jj] += A[ll][ii] * B[ii][jj];
+						}            
+					}
+            	}	
+        	}	
+    	}
+	}
+/*
+    printf("C\n");
+    mat_print(m,n,C);  
+*/
+}
+
+int min(int a, int b){
+	
+	if (a < b)
+	{
+		return a;
+	}
+	else
+	{
+		return b;
+	} 	
 }
 
 
