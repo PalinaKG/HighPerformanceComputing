@@ -10,7 +10,7 @@
 #BSUB -q hpcintro
 #BSUB -n 1
 #BSUB -R "rusage[mem=2048]"
-BSUB -W 30
+#BSUB -W 30
 
 # uncomment the following line, if you want to assure that your job has
 # a whole CPU for itself (shared L3 cache)
@@ -24,9 +24,13 @@ EXECUTABLE=matmult_c.gcc
 
 # define the mkn values in the MKN variable
 #
+<<<<<<< HEAD
+SIZES="12 24 36 48 75 102 124 200 250 350 480 730 800 1000 1200 1500"
+=======
 #SIZES="12 24 30 48 124 170 200 250 350 480 520 730 800 900 1000 1500"
 SIZES="1500"
 #SIZES="12 24 36 48 75 102 124 200 250 350 480 730 800 1000 1200 1500"
+>>>>>>> d9628dd51d62c3a04f3e0838d5f2787f0397eaa7
 
 # define the permutation type in PERM
 #
