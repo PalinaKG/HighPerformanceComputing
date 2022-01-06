@@ -1,0 +1,11 @@
+  5400.000    111.684 # matmult_blk 2
+  5400.000    138.757 # matmult_blk 4
+  5400.000    168.807 # matmult_blk 8
+  5400.000    185.269 # matmult_blk 16
+  5400.000    185.791 # matmult_blk 32
+  5400.000    190.754 # matmult_blk 64
+  5400.000    187.762 # matmult_blk 128
+  5400.000    177.827 # matmult_blk 256
+  5400.000    178.972 # matmult_blk 512
+  5400.000    175.880 # matmult_blk 1028
+  5400.000    178.145 # matmult_blk 2056
