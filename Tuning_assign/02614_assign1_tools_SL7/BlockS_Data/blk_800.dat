@@ -1,0 +1,11 @@
+ 15000.000    100.957 # matmult_blk 2
+ 15000.000    131.844 # matmult_blk 4
+ 15000.000    167.278 # matmult_blk 8
+ 15000.000    184.955 # matmult_blk 16
+ 15000.000    183.934 # matmult_blk 32
+ 15000.000    189.699 # matmult_blk 64
+ 15000.000    191.201 # matmult_blk 128
+ 15000.000    180.721 # matmult_blk 256
+ 15000.000    172.256 # matmult_blk 512
+ 15000.000    130.008 # matmult_blk 1028
+ 15000.000    138.815 # matmult_blk 2056
