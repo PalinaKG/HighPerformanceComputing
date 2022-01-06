@@ -244,7 +244,6 @@ void matmult_blk(int m, int n, int k, double **A, double **B, double **C, int bs
     {
         for (j = 0; j < n; j+=bs)
         {
-            //sum = 0.0;
             for (i = 0; i < k; i+=bs)
             {
             	for (ll = l; ll < min(l+bs,m); ll++)
