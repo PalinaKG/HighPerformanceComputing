@@ -11,9 +11,9 @@ import matplotlib.pyplot as plt
 perms = ["mnk", "nmk", "nkm", "mkn", "kmn", "knm"]
 
 for perm in perms:
-    data_O2 = np.loadtxt(perm+"_-O2.dat",unpack=True)
-    data_O3 = np.loadtxt(perm+"_-O3.dat",unpack=True)
-    data_Ofast = np.loadtxt(perm+"_-Ofast.dat",unpack=True)
+    data_O2 = np.loadtxt("Compile_Data\\" + perm+"_-O2.dat",unpack=True)
+    data_O3 = np.loadtxt("Compile_Data\\" + perm+"_-O3.dat",unpack=True)
+    data_Ofast = np.loadtxt("Compile_Data\\" + perm+"_-Ofast.dat",unpack=True)
 
     memory = data_O2[0]
     memory_O3 = data_O3[0]
