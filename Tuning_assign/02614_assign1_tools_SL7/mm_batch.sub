@@ -45,6 +45,6 @@ do
 echo $P
 for S in $SIZES
 do
-    ./$EXECUTABLE $P $S $S $S $BLKSIZE
+    ./$EXECUTABLE $P $S $S $S $BLKSIZE | grep -v CPU >> $P.dat
 done
 done
