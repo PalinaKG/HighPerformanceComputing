@@ -223,7 +223,7 @@ void matmult_knm(int m, int n, int k, double **A, double **B, double **C){
 
 
 void matmult_blk(int m, int n, int k, double **A, double **B, double **C, int bs){
-    int i, j, l, ii, jj, ll;
+    int i, j, l, ii, jj, ll, l_min, j_min, i_min;
     double sum;
    /* 
     printf("A\n");
@@ -242,15 +242,18 @@ void matmult_blk(int m, int n, int k, double **A, double **B, double **C, int bs
 
 	for (l = 0; l < m; l+=bs)
     {
+		l_min = min(bs,m-l);
         for (j = 0; j < k; j+=bs)
         {
+			j_min = min(bs,k-j);
             for (i = 0; i < n; i+=bs)
             {
-            	for (ll = 0; ll < min(bs,m-l); ll++)
+				i_min = min(bs,n-i);
+            	for (ll = 0; ll < l_min; ll++)
             	{
-					for (jj = 0; jj < min(bs,k-j); jj++)
+					for (jj = 0; jj < j_min; jj++)
 					{
-                		for (ii = 0; ii < min(bs,n-i); ii++)
+                		for (ii = 0; ii < i_min; ii++)
 						{
 							C[ll+l][ii+i] += A[ll+l][jj+j] * B[jj+j][ii+i];
 						}            
