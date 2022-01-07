@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 perms = ["mnk", "nmk", "nkm", "mkn", "kmn", "knm"]
-unrolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+unrolls = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 legend = []
 
 for perm in perms:
@@ -17,7 +17,7 @@ for perm in perms:
     plt.title(perm)
     for n in unrolls:
         print(perm+"_"+str(n)+".dat")
-        data = np.loadtxt("Unroll_Data\\"+perm+"_"+str(n)+".dat",unpack=True)
+        data = np.loadtxt("Unroll_Data/"+perm+"_"+str(n)+".dat",unpack=True)
         memory = data[0]
         legend.append("Unroll= " + str(n))
         
