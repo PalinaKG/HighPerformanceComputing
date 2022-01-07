@@ -1,11 +1,11 @@
- 15000.000    207.609 # matmult_blk 2
- 15000.000    322.050 # matmult_blk 4
- 15000.000    409.114 # matmult_blk 8
- 15000.000    477.815 # matmult_blk 16
- 15000.000    475.673 # matmult_blk 32
- 15000.000    506.275 # matmult_blk 64
- 15000.000    522.078 # matmult_blk 128
- 15000.000    530.319 # matmult_blk 256
- 15000.000    536.182 # matmult_blk 512
- 15000.000    539.753 # matmult_blk 1028
- 15000.000    539.512 # matmult_blk 2056
+ 15000.000    109.308 0 # matmult_blk 2
+ 15000.000    128.625 0 # matmult_blk 4
+ 15000.000    150.329 0 # matmult_blk 8
+ 15000.000    159.236 0 # matmult_blk 16
+ 15000.000    158.483 0 # matmult_blk 32
+ 15000.000    161.980 0 # matmult_blk 64
+ 15000.000    163.647 0 # matmult_blk 128
+ 15000.000    164.372 0 # matmult_blk 256
+ 15000.000    165.599 0 # matmult_blk 512
+ 15000.000    167.236 0 # matmult_blk 1028
+ 15000.000    167.188 0 # matmult_blk 2056
