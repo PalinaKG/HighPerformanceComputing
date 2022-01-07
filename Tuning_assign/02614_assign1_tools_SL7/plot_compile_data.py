@@ -52,4 +52,28 @@ for perm in perms:
     plt.axvline(x=256)
     plt.axvline(x=30720)   
     plt.xscale('log', basex=2)
+    
+
+plt.figure()
+for perm in perms:
+
+    data_O3 = np.loadtxt("Compile_Data/" + perm+"_-O3.dat",unpack=True)
+   
+    memory_O3 = data_O3[0]
+ 
+    mf_O3 = data_O3[1]
+ 
+
+    plt.plot(memory_O3,mf_O3,'*-')
+
+    
+    
+plt.title("All permutaions with -g -O3")
+plt.xlabel("Memory [kbytes]")
+plt.ylabel("Performance [Mflops/s]")
+plt.legend(perms)
+plt.axvline(x=32)
+plt.axvline(x=256)
+plt.axvline(x=30720)   
+plt.xscale('log', basex=2)
 
