@@ -29,10 +29,11 @@ SIZES="12 24 36 48 75 102 124 200 250 350 480 730 800 1000 1200 1500"
 
 # define the permutation type in PERM
 #
-PERM="mnk nmk nkm mkn kmn knm"
+#PERM="mnk nmk nkm mkn kmn knm"
+PERM="knm"
 
 # diffrent compiler options
-UNROLL="0 10 20 30 40 50 60 70 80 90"
+UNROLL="0 10 20 30 40 50 60 70 80 90 100"
 
 # uncomment and set a reasonable BLKSIZE for the blk version
 #

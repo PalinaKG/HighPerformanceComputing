@@ -11,14 +11,14 @@ import matplotlib.pyplot as plt
 perms = ["mnk", "nmk", "nkm", "mkn", "kmn", "knm"]
 
 for perm in perms:
-    data_O2 = np.loadtxt("Compile_Data/" + perm+"_-O2.dat",unpack=True)
-    data_O3 = np.loadtxt("Compile_Data/" + perm+"_-O3.dat",unpack=True)
-    data_Ofast = np.loadtxt("Compile_Data/" + perm+"_-Ofast.dat",unpack=True)
+    data_O2 = np.loadtxt("Compile_Data\\" + perm+"_-O2.dat",unpack=True)
+    data_O3 = np.loadtxt("Compile_Data\\" + perm+"_-O3.dat",unpack=True)
+    data_Ofast = np.loadtxt("Compile_Data\\" + perm+"_-Ofast.dat",unpack=True)
     
-    data_floop = np.loadtxt("Compile_Data/" + perm+"_O3_floop-interchange.dat",unpack=True)
-    data_fpeel = np.loadtxt("Compile_Data/" + perm+"_O3_fpeel-loops.dat",unpack=True)
-    data_funroll = np.loadtxt("Compile_Data/" + perm+"_O3_funroll-loops.dat",unpack=True)
-    data_funsafe = np.loadtxt("Compile_Data/" + perm+"_O3_funsafe-loop-optimizations.dat",unpack=True)
+    data_floop = np.loadtxt("Compile_Data\\" + perm+"_O3_floop-interchange.dat",unpack=True)
+    data_fpeel = np.loadtxt("Compile_Data\\" + perm+"_O3_fpeel-loops.dat",unpack=True)
+    data_funroll = np.loadtxt("Compile_Data\\" + perm+"_O3_funroll-loops.dat",unpack=True)
+    data_funsafe = np.loadtxt("Compile_Data\\" + perm+"_O3_funsafe-loop-optimizations.dat",unpack=True)
     
     memory = data_O2[0]
     memory_O3 = data_O3[0]

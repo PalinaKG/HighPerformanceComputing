@@ -17,7 +17,7 @@ for perm in perms:
     plt.title(perm)
     for n in unrolls:
         print(perm+"_"+str(n)+".dat")
-        data = np.loadtxt("Unroll_Data/"+perm+"_"+str(n)+".dat",unpack=True)
+        data = np.loadtxt("Unroll_Data\\"+perm+"_"+str(n)+".dat",unpack=True)
         memory = data[0]
         legend.append("Unroll= " + str(n))
         
