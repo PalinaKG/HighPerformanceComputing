@@ -1,0 +1,15 @@
+### Start Thu Jan  6 22:32:35 2022
+# /opt/oracle/developerstudio12.6/bin/../bin/er_archive -n -O /zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/er_archive.log /zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er
+Copying `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/matmult_c.gcc'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/matmult_c.gcc_hiJGDwYH_Oa'
+Copying `/appl/gcc/6.3.0/lib64/libgcc_s.so.1'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libgcc_s.so.1_vjp4ueVdCr5'
+Copying `/appl/gcc/6.3.0/lib64/libquadmath.so.0.0.0'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libquadmath.so.0.0.0_vjp4ueVdCr5'
+Copying `/usr/lib64/libm-2.17.so'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libm-2.17.so_OCEC1bthLm2'
+Copying `/appl/gcc/6.3.0/lib64/libgfortran.so.3.0.0'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libgfortran.so.3.0.0_vjp4ueVdCr5'
+Copying `/usr/lib64/librt-2.17.so'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/librt-2.17.so_OCEC1bthLm2'
+Copying `/usr/lib64/libpthread-2.17.so'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libpthread-2.17.so_OCEC1bthLm2'
+Copying `/usr/lib64/libc-2.17.so'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libc-2.17.so_OCEC1bthLm2'
+Copying `/usr/lib64/libdl-2.17.so'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libdl-2.17.so_OCEC1bthLm2'
+Copying `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/libmatmult.so'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libmatmult.so_hiJGDwYH_Oa'
+Copying `/usr/lib64/atlas/libsatlas.so.3.10'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libsatlas.so.3.10_bkXz1NQ1lK8'
+Copying `/opt/oracle/developerstudio12.6/lib/analyzer/amd64/runtime/libcollector.so'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/libcollector.so_-C8vWEvanQd'
+Copying `/usr/lib64/ld-2.17.so'  to `/zhome/7a/e/164714/Desktop/Assignments/Tuning_assign/02614_assign1_tools_SL7/collector.11988125.er/archives/ld-2.17.so_OCEC1bthLm2'
