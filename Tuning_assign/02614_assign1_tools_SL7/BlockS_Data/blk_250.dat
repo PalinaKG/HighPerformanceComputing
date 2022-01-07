@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+  1464.844    207.467 # matmult_blk 2
+  1464.844    320.384 # matmult_blk 4
+  1464.844    406.338 # matmult_blk 8
+  1464.844    476.361 # matmult_blk 16
+  1464.844    473.943 # matmult_blk 32
+  1464.844    505.337 # matmult_blk 64
+  1464.844    525.081 # matmult_blk 128
+  1464.844    532.937 # matmult_blk 256
+  1464.844    534.175 # matmult_blk 512
+  1464.844    533.076 # matmult_blk 1028
+  1464.844    533.167 # matmult_blk 2056
+=======
   1464.844    108.750 0 # matmult_blk 2
   1464.844    128.631 0 # matmult_blk 4
   1464.844    149.836 0 # matmult_blk 8
@@ -9,3 +22,4 @@
   1464.844    166.144 0 # matmult_blk 512
   1464.844    166.326 0 # matmult_blk 1028
   1464.844    166.151 0 # matmult_blk 2056
+>>>>>>> 92fe5a8c31f849ff995708b8e23934288c8d801f

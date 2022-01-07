@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+     3.375    188.227 # matmult_blk 2
+     3.375    285.308 # matmult_blk 4
+     3.375    317.437 # matmult_blk 8
+     3.375    393.866 # matmult_blk 16
+     3.375    394.692 # matmult_blk 32
+     3.375    394.366 # matmult_blk 64
+     3.375    394.585 # matmult_blk 128
+     3.375    394.289 # matmult_blk 256
+     3.375    394.575 # matmult_blk 512
+     3.375    394.299 # matmult_blk 1028
+     3.375    394.173 # matmult_blk 2056
+=======
      3.375     99.239 0 # matmult_blk 2
      3.375    118.107 0 # matmult_blk 4
      3.375    133.003 0 # matmult_blk 8
@@ -9,3 +22,4 @@
      3.375    145.776 0 # matmult_blk 512
      3.375    145.982 0 # matmult_blk 1028
      3.375    144.930 0 # matmult_blk 2056
+>>>>>>> 92fe5a8c31f849ff995708b8e23934288c8d801f

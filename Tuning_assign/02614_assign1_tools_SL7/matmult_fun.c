@@ -242,17 +242,17 @@ void matmult_blk(int m, int n, int k, double **A, double **B, double **C, int bs
 
 	for (l = 0; l < m; l+=bs)
     {
-        for (j = 0; j < n; j+=bs)
+        for (j = 0; j < k; j+=bs)
         {
-            for (i = 0; i < k; i+=bs)
+            for (i = 0; i < n; i+=bs)
             {
             	for (ll = l; ll < min(l+bs,m); ll++)
             	{
-					for (jj = j; jj < min(j+bs,n); jj++)
+					for (jj = j; jj < min(j+bs,k); jj++)
 					{
-                		for (ii = i; ii < min(i+bs,k); ii++)
+                		for (ii = i; ii < min(i+bs,n); ii++)
 						{
-							C[ll][jj] += A[ll][ii] * B[ii][jj];
+							C[ll][ii] += A[ll][jj] * B[jj][ii];
 						}            
 					}
             	}	

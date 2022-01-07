@@ -1,0 +1,11 @@
+   677.344    206.909 # matmult_blk 2
+   677.344    319.367 # matmult_blk 4
+   677.344    404.857 # matmult_blk 8
+   677.344    475.308 # matmult_blk 16
+   677.344    474.921 # matmult_blk 32
+   677.344    501.490 # matmult_blk 64
+   677.344    513.126 # matmult_blk 128
+   677.344    529.495 # matmult_blk 256
+   677.344    528.600 # matmult_blk 512
+   677.344    530.460 # matmult_blk 1028
+   677.344    528.462 # matmult_blk 2056
