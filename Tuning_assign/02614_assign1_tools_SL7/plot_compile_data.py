@@ -41,12 +41,15 @@ for perm in perms:
     plt.plot(memory,mf_fpeel,'*-')
     plt.plot(memory,mf_funroll,'*-')
     plt.plot(memory,mf_funsafe,'*-')
+
     
     
     plt.title(perm)
     plt.xlabel("Memory [kbytes]")
     plt.ylabel("Performance [Mflops/s]")
     plt.legend(["-O2","-O3","-Ofast","floop-interchange","fpeel-loops","funroll-loops","funsafe-loop-optimizations"])
-    
-
+    plt.axvline(x=32)
+    plt.axvline(x=256)
+    plt.axvline(x=30720)   
+    plt.xscale('log', basex=2)
 

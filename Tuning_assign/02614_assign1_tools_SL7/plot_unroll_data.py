@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 perms = ["mnk", "nmk", "nkm", "mkn", "kmn", "knm"]
-perms = ["mnk"]
 unrolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 legend = []
 
@@ -29,3 +28,7 @@ for perm in perms:
     plt.xlabel("Memory [kbytes]")
     plt.ylabel("Performance [Mflops/s]")
     plt.legend(legend)
+    plt.xscale('log', basex=2)
+    plt.axvline(x=32)
+    plt.axvline(x=256)
+    plt.axvline(x=30720)
