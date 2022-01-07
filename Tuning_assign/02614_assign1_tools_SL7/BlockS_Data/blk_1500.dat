@@ -1,25 +1,11 @@
-<<<<<<< HEAD
- 52734.375    207.846 # matmult_blk 2
- 52734.375    322.163 # matmult_blk 4
- 52734.375    408.863 # matmult_blk 8
- 52734.375    477.480 # matmult_blk 16
- 52734.375    475.471 # matmult_blk 32
- 52734.375    506.797 # matmult_blk 64
- 52734.375    524.103 # matmult_blk 128
- 52734.375    532.760 # matmult_blk 256
- 52734.375    537.450 # matmult_blk 512
- 52734.375    538.577 # matmult_blk 1028
- 52734.375    541.240 # matmult_blk 2056
-=======
- 52734.375     93.136 # matmult_blk 2
- 52734.375    140.511 # matmult_blk 4
- 52734.375    173.633 # matmult_blk 8
- 52734.375    188.901 # matmult_blk 16
- 52734.375    187.404 # matmult_blk 32
- 52734.375    193.724 # matmult_blk 64
- 52734.375    196.676 # matmult_blk 128
- 52734.375    185.501 # matmult_blk 256
- 52734.375    182.354 # matmult_blk 512
- 52734.375    183.500 # matmult_blk 1028
- 52734.375    181.001 # matmult_blk 2056
->>>>>>> d9628dd51d62c3a04f3e0838d5f2787f0397eaa7
+ 52734.375    109.615 0 # matmult_blk 2
+ 52734.375    128.764 0 # matmult_blk 4
+ 52734.375    150.172 0 # matmult_blk 8
+ 52734.375    158.928 0 # matmult_blk 16
+ 52734.375    158.225 0 # matmult_blk 32
+ 52734.375    161.899 0 # matmult_blk 64
+ 52734.375    164.058 0 # matmult_blk 128
+ 52734.375    164.521 0 # matmult_blk 256
+ 52734.375    165.485 0 # matmult_blk 512
+ 52734.375    165.887 0 # matmult_blk 1028
+ 52734.375    167.265 0 # matmult_blk 2056

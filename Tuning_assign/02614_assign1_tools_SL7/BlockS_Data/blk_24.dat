@@ -1,11 +1,11 @@
-    13.500    201.331 # matmult_blk 2
-    13.500    315.639 # matmult_blk 4
-    13.500    399.993 # matmult_blk 8
-    13.500    444.628 # matmult_blk 16
-    13.500    447.989 # matmult_blk 32
-    13.500    447.776 # matmult_blk 64
-    13.500    443.452 # matmult_blk 128
-    13.500    447.919 # matmult_blk 256
-    13.500    447.986 # matmult_blk 512
-    13.500    447.929 # matmult_blk 1028
-    13.500    447.855 # matmult_blk 2056
+    13.500    108.183 0 # matmult_blk 2
+    13.500    125.764 0 # matmult_blk 4
+    13.500    147.475 0 # matmult_blk 8
+    13.500    153.780 0 # matmult_blk 16
+    13.500    153.736 0 # matmult_blk 32
+    13.500    153.201 0 # matmult_blk 64
+    13.500    153.719 0 # matmult_blk 128
+    13.500    153.708 0 # matmult_blk 256
+    13.500    153.689 0 # matmult_blk 512
+    13.500    153.428 0 # matmult_blk 1028
+    13.500    153.690 0 # matmult_blk 2056
