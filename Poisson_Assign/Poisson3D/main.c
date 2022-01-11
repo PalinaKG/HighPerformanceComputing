@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "alloc3d.h"
 #include "print.h"
+#include <math.h>
 
 #ifdef _JACOBI
 #include "jacobi.h"
@@ -15,6 +16,8 @@
 #endif
 
 #define N_DEFAULT 100
+void boundaries(double ***u, int N);
+void initialize_f(double ***f, int N);
 
 int
 main(int argc, char *argv[]) {
@@ -28,6 +31,8 @@ main(int argc, char *argv[]) {
     char        *output_ext    = "";
     char	output_filename[FILENAME_MAX];
     double 	***u = NULL;
+    double  ***u_old = NULL;
+    double  ***f = NULL;
 
 
     /* get the paramters from the command line */
@@ -40,17 +45,44 @@ main(int argc, char *argv[]) {
     }
 
     // allocate memory
-    if ( (u = d_malloc_3d(N, N, N)) == NULL ) {
+    if ( (u = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
         perror("array u: allocation failed");
         exit(-1);
     }
+    
+    if ( (f = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
+        perror("array u: allocation failed");
+        exit(-1);
+    }
+    
+    if ( (u_old = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
+        perror("array u: allocation failed");
+        exit(-1);
+    }
+    
+    
+    initialize_f(f,N);
+    
+    
+    
+    //XYZ
+    for (int i = 0; i < (N + 2); i++)
+    {
+        for (int j = 0; j < (N + 2); j++)
+        {
+            for (int k = 0; k < (N + 2); k++)
+            {
+                u[i][j][k] = start_T;
+            }
+        }
+    }
+   
+    boundaries(u, N);
 
-    /*
-     *
-     * fill in your code here 
-     *
-     *
-     */
+    #ifdef _JACOBI
+        jacobi(f, u, u_old, N, iter_max, tolerance);
+    #endif
+    
 
     // dump  results if wanted 
     switch(output_type) {
@@ -78,4 +110,54 @@ main(int argc, char *argv[]) {
     free(u);
 
     return(0);
+}
+
+void boundaries(double ***u, int N)
+{
+    for (int i = 0; i < (N + 2); i++)
+    {
+        for (int k = 0; k < (N + 2); k++)
+        {
+            u[i][0][k] = 0.0;
+            u[i][N+1][k] = 20.0;
+            u[0][i][k] = 20.0;
+            u[N+1][i][k] = 20.0;
+            u[i][k][0] = 20.0;
+            u[i][k][N+1] = 20.0;
+        }
+    }
+}
+
+void initialize_f(double ***f, int N)
+{
+    for (int i = 0; i < (N + 2); i++)
+    {
+        for (int j = 0; j < (N + 2); j++)
+        {
+            for (int k = 0; k < (N + 2); k++)
+            {
+                f[i][j][k] = 0.0;
+            }
+        }
+    }
+    
+    int x1 = 0;
+    int x2 = floor((5/16)*N); //(1 + (-3/8)) * 1/2
+    int y1 = 0;
+    int y2 = floor((1/4)*N);
+    int z1 = ceil((1/6)*N);
+    int z2 = floor((1/2)*N);
+    
+    
+    for (int i = x1; i < x2; i++)
+    {
+        for (int j = y1; j < y2; j++)
+        {
+            for (int k = z1; k < z2; k++)
+            {
+                f[i][j][k] = 200.0;
+            }
+        }
+    }
+    
 }
