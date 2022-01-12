@@ -8,8 +8,7 @@
 void update(int N, double ***f, double ***u, double ***u_old);
 double frobenius_norm(double ***u, double ***u_old, int N);
 
-void
-jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double threshold) {
+int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double threshold) {
     float d = 1.0/0.0;
     int k = 0;
 	int n = N+2;
@@ -20,7 +19,7 @@ jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double thres
         d = frobenius_norm(u, u_old, N);
         k = k + 1;
     }
-    
+    return k;
 }
 
 
