@@ -97,7 +97,7 @@ main(int argc, char *argv[]) {
 
     
     /* Print n and results  */
-	//printf("%8.3f %8.3f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
+	printf("%8.3f %8.3f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
 
     // dump  results if wanted 
     switch(output_type) {
