@@ -142,13 +142,16 @@ void initialize_f(double ***f, int N)
     }
     
     int x1 = 0;
-    int x2 = floor((5/16)*N); //(1 + (-3/8)) * 1/2
+    int x2 = floor((double)N*5/16.0); //(1 + (-3/8)) * 1/2
     int y1 = 0;
-    int y2 = floor((1/4)*N);
+    int y2 = floor((1/4)*(double)N);
     int z1 = ceil((1/6)*N);
     int z2 = floor((1/2)*N);
-    
-    
+printf("5/16: %f\n",(5/16)*N);
+    printf("x2: %f\n",x2);
+    printf("y2: %f\n",y2);
+    printf("z1: %f\n",z1);
+    printf("z2: %f\n",z2);
     for (int i = x1; i < x2; i++)
     {
         for (int j = y1; j < y2; j++)

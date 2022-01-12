@@ -12,9 +12,10 @@ void
 jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double threshold) {
     float d = 1.0/0.0;
     int k = 0;
+	int n = N+2;
     
     while (d > threshold && k < k_max) {
-        memcpy(&u_old[0][0][0],&u[0][0][0],N*N*N*sizeof(&u[0][0][0]));
+        memcpy(&u_old[0][0][0],&u[0][0][0],n*n*n*sizeof(&u[0][0][0]));
         update(N, f, u, u_old);
         d = frobenius_norm(u, u_old, N);
         k = k + 1;
