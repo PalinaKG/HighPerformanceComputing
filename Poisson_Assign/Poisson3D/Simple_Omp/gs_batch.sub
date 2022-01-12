@@ -1,0 +1,10 @@
+#! /bin/bash
+#BSUB -J gs_simple_omp
+#BSUB -o gs_simple_omp%J.out
+#BSUB -W 15
+#BSUB -q hpcintro
+#BSUB -R "select[model == XeonE5_2650v4]"
+
+lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)'
+
+OMP_NUM_THREADS=4 OMP_SCHEDULE="static,1" ./poisson_gs 100 2000 0.001 0.0 0

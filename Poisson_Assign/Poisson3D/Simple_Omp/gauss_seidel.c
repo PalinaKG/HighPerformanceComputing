@@ -26,14 +26,16 @@ int gauss_seidel(double ***f, double ***u, double ***u_old, int N, int k_max, do
 void update(int N, double ***f, double ***u)
 {
     double delta = (1.0/(double)N)*(1.0/(double)N);
-#pragma omp parallel for ordered(2)
-    for (int i = 1; i < (N + 1); i++)
+    int i,j,k;
+
+#pragma omp parallel for ordered(2) private(j,k)
+    for (i = 1; i < (N + 1); i++)
     {
-        for (int j = 1; j < (N + 1); j++)
+        for (j = 1; j < (N + 1); j++)
         {
-            for (int k = 1; k < (N + 1); k++)
+#pragma omp ordered depend(sink:i-1,j) depend(sink:i,j-1)
+            for (k = 1; k < (N + 1); k++)
             {
-#pragma omp ordered depend(i-1,j,k) depend(i,j-1,k) depend(u,j,k-1)
                 u[i][j][k] = (1.0/6.0)*(u[i-1][j][k] + u[i+1][j][k] + u[i][j-1][k] + u[i][j+1][k] + u[i][j][k-1] + u[i][j][k+1] + delta*f[i][j][k]);
             }
 #pragma omp ordered depend(source)
