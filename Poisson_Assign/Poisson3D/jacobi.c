@@ -3,6 +3,7 @@
  */
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 
 void update(int N, double ***f, double ***u, double ***u_old);
 double frobenius_norm(double ***u, double ***u_old, int N);
@@ -24,7 +25,8 @@ jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double thres
 
 void update(int N, double ***f, double ***u, double ***u_old)
 {
-    int delta = 4 / ((N-1)*(N-1));
+    double delta = (1.0/(double)N)*(1.0/(double)N);
+
     for (int i = 1; i < (N + 1); i++)
     {
         for (int j = 1; j < (N + 1); j++)
