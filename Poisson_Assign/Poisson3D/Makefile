@@ -19,7 +19,7 @@ IPO	=
 ISA	= 
 CHIP	= 
 ARCH	= 
-PARA	= -fopenmp
+PARA	= 
 CFLAGS	= $(DEFS) $(ARCH) $(OPT) $(ISA) $(CHIP) $(IPO) $(PARA) $(XOPTS)
 LDFLAGS = -lm 
 
