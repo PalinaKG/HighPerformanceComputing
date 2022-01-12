@@ -7,6 +7,7 @@
 #include "print.h"
 #include <math.h>
 #include <time.h>
+#include <omp.h>
 
 #ifdef _JACOBI
 #include "jacobi.h"
@@ -75,7 +76,7 @@ main(int argc, char *argv[]) {
     
 
 	//x3 because we have 3 matrices, u, uold and f
-    double mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
+    float mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
 
     start_t = mytimer();
@@ -90,14 +91,15 @@ main(int argc, char *argv[]) {
 
     //total time
     total_time = delta_t(start_t, end_t) / 1000;
-    printf("%8.3f", total_time);
+    // printf("%8.3f", total_time);
 
     //flops per second
     double flopSec = flops/total_time;
 
     
     /* Print n and results  */
-	printf("%8.3f %8.3f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
+    printf( "Mem: %f \n",mem);
+	printf("%f %f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
 
     // dump  results if wanted 
     switch(output_type) {
