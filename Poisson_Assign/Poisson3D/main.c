@@ -17,8 +17,8 @@
 #endif
 
 #define N_DEFAULT 100
-void boundaries(double ***u, int N);
-void initialize_f(double ***f, int N);
+void Initialize_U(double ***u, int N, int start_t);
+void Initialize_F(double ***f, int N);
 
 #define mytimer clock
 #define delta_t(a,b) (1e3 * (b - a) / CLOCKS_PER_SEC)
@@ -39,7 +39,7 @@ main(int argc, char *argv[]) {
     double  ***f = NULL;
     double start; 
 	double end; 
-    double iter;
+    int iter;
     clock_t start_t, end_t;
     double total_time;
 
@@ -70,30 +70,18 @@ main(int argc, char *argv[]) {
     }
     
     
-    initialize_f(f,N);
+    Initialize_F(f,N);
+    Initialize_U(u, N,start_T);
     
-    
-    //XYZ
-    for (int i = 0; i < (N + 2); i++)
-    {
-        for (int j = 0; j < (N + 2); j++)
-        {
-            for (int k = 0; k < (N + 2); k++)
-            {
-                u[i][j][k] = start_T;
-            }
-        }
-    }
-    boundaries(u, N);
-    //x3 because we have 3 matrices, u, uold and f
+
+	//x3 because we have 3 matrices, u, uold and f
     double mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
 
     start_t = mytimer();
     #ifdef _JACOBI
         //the interations are dynamic, we should return the num of iteration from jacobi
-        jacobi(f, u, u_old, N, iter_max, tolerance);
-        iter = 10;
+        iter = jacobi(f, u, u_old, N, iter_max, tolerance);
     #endif
     end_t = mytimer();
 
@@ -109,7 +97,7 @@ main(int argc, char *argv[]) {
 
     
     /* Print n and results  */
-	//printf("%8.3f %8.3f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
+	printf("%8.3f %8.3f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
 
     // dump  results if wanted 
     switch(output_type) {
@@ -124,7 +112,7 @@ main(int argc, char *argv[]) {
 	    break;
 	case 4:
 	    output_ext = ".vtk";
-	    sprintf(output_filename, "%s_%d%s", output_prefix, N, output_ext);
+	    sprintf(output_filename, "%s_%d%s", output_prefix, N+2, output_ext);
 	    fprintf(stderr, "Write VTK file to %s: ", output_filename);
 	    print_vtk(output_filename, N+2, u);
 	    break;
@@ -140,28 +128,21 @@ main(int argc, char *argv[]) {
 }
 
 
-
-void boundaries(double ***u, int N)
-{
-int i,j,k,l,m;
-int n = N+1;
-for (l=0; l<(N+2); l++){
-        for(m=0; m<(N+2); m++){
-            u[0][l][m] = 20.0;
-            u[n][l][m] = 20.0;
-            u[l][0][m] = 0.0;
-            u[l][n][m] = 20.0;
-            u[l][m][0] = 20.0;
-            u[l][m][n] = 20.0;
-        }
-    }
-
-}
-
-
-void boundaries2(double ***u, int N)
+void Initialize_U(double ***u, int N, int start_T)
 {
     for (int i = 0; i < (N + 2); i++)
+    {
+        for (int j = 0; j < (N + 2); j++)
+        {
+            for (int k = 0; k < (N + 2); k++)
+            {
+                u[i][j][k] = start_T;
+            }
+        }
+    }
+    
+	
+	for (int i = 0; i < (N + 2); i++)
     {
         for (int k = 0; k < (N + 2); k++)
         {
@@ -175,7 +156,7 @@ void boundaries2(double ***u, int N)
     }
 }
 
-void initialize_f(double ***f, int N)
+void Initialize_F(double ***f, int N)
 {
     for (int i = 0; i < (N + 2); i++)
     {
@@ -195,11 +176,6 @@ void initialize_f(double ***f, int N)
     int z1 = ceil((1/6.0)*N);
     int z2 = floor((1/2.0)*N);
 
-
-    printf("x2: %d \n",x2);
-    printf("y2: %d \n",y2);
-    printf("z1: %d \n",z1);
-    printf("z2: %d \n",z2);
     for (int i = x1; i <= x2; i++)
     {
         for (int j = y1; j <= y2; j++)
