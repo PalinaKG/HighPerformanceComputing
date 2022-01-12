@@ -34,7 +34,7 @@ void update(int N, double ***f, double ***u, double ***u_old)
         {
             for (int k = 1; k < (N + 1); k++)
             {
-                u[i][j][k] = (1/6)*(u_old[i-1][j][k] + u_old[i+1][j][k] + u_old[i][j-1][k] + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] + delta*f[i][j][k]);
+                u[i][j][k] = (1/6.0)*(u_old[i-1][j][k] + u_old[i+1][j][k] + u_old[i][j-1][k] + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] + delta*f[i][j][k]);
             }
         }
     }
