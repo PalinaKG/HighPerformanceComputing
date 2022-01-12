@@ -26,12 +26,14 @@ int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double t
 void update(int N, double ***f, double ***u, double ***u_old)
 {
     double delta = (1.0/(double)N)*(1.0/(double)N);
+    int i,j,k;
 
-    for (int i = 1; i < (N + 1); i++)
+    #pragma omp parallel for default(none) shared(u,u_old,f) private(i,j,k,N,delta)
+    for (i = 1; i < (N + 1); i++)
     {
-        for (int j = 1; j < (N + 1); j++)
+        for (j = 1; j < (N + 1); j++)
         {
-            for (int k = 1; k < (N + 1); k++)
+            for (k = 1; k < (N + 1); k++)
             {
                 u[i][j][k] = (1.0/6.0)*(u_old[i-1][j][k] + u_old[i+1][j][k] + u_old[i][j-1][k] + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] + delta*f[i][j][k]);
             }
