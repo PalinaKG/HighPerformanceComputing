@@ -101,7 +101,7 @@ main(int argc, char *argv[]) {
     double flops = 8 * N * N * N; //bæta við num of its þegar þau eru búin að pusha því
 
     //total time
-    total_time = ((double)end_t - (double)start_t)/(double)CLOCKS_PER_SEC;
+    total_time = delta_t(start_t, end_t) / 1000;
     printf("%8.3f", total_time);
 
     //flops per second
