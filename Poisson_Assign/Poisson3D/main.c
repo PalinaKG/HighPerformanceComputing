@@ -126,7 +126,7 @@ main(int argc, char *argv[]) {
 	    output_ext = ".vtk";
 	    sprintf(output_filename, "%s_%d%s", output_prefix, N, output_ext);
 	    fprintf(stderr, "Write VTK file to %s: ", output_filename);
-	    print_vtk(output_filename, N, u);
+	    print_vtk(output_filename, N+2, u);
 	    break;
 	default:
 	    fprintf(stderr, "Non-supported output type!\n");
@@ -139,7 +139,27 @@ main(int argc, char *argv[]) {
     return(0);
 }
 
+
+
 void boundaries(double ***u, int N)
+{
+int i,j,k,l,m;
+int n = N+1;
+for (l=0; l<(N+2); l++){
+        for(m=0; m<(N+2); m++){
+            u[0][l][m] = 20.0;
+            u[n][l][m] = 20.0;
+            u[l][0][m] = 0.0;
+            u[l][n][m] = 20.0;
+            u[l][m][0] = 20.0;
+            u[l][m][n] = 20.0;
+        }
+    }
+
+}
+
+
+void boundaries2(double ***u, int N)
 {
     for (int i = 0; i < (N + 2); i++)
     {
@@ -169,13 +189,13 @@ void initialize_f(double ***f, int N)
     }
     
     int x1 = 0;
-    int x2 =floor( (N*5.0/16.0) ); //(1 + (-3/8)) * 1/2
-    
+    int x2 =floor( (N*5.0/16.0) ); //(1 + (-3/8)) * 1/2 
     int y1 = 0;
     int y2 = floor((1/4.0)*N);
     int z1 = ceil((1/6.0)*N);
     int z2 = floor((1/2.0)*N);
-//printf("5/16: %f \n",(5/16));
+
+
     printf("x2: %d \n",x2);
     printf("y2: %d \n",y2);
     printf("z1: %d \n",z1);
