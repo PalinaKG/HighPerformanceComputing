@@ -153,11 +153,11 @@ void initialize_f(double ***f, int N)
     printf("y2: %d \n",y2);
     printf("z1: %d \n",z1);
     printf("z2: %d \n",z2);
-    for (int i = x1; i < x2; i++)
+    for (int i = x1; i <= x2; i++)
     {
-        for (int j = y1; j < y2; j++)
+        for (int j = y1; j <= y2; j++)
         {
-            for (int k = z1; k < z2; k++)
+            for (int k = z1; k <= z2; k++)
             {
                 f[i][j][k] = 200.0;
             }
