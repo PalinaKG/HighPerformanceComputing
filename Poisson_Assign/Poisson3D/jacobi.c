@@ -34,7 +34,7 @@ void update(int N, double ***f, double ***u, double ***u_old)
         {
             for (int k = 1; k < (N + 1); k++)
             {
-                u[i][j][k] = (1/6.0)*(u_old[i-1][j][k] + u_old[i+1][j][k] + u_old[i][j-1][k] + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] + delta*f[i][j][k]);
+                u[i][j][k] = (1.0/6.0)*(u_old[i-1][j][k] + u_old[i+1][j][k] + u_old[i][j-1][k] + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] + delta*f[i][j][k]);
             }
         }
     }
@@ -51,7 +51,7 @@ double frobenius_norm(double ***u, double ***u_old, int N)
             for (int k = 0; k < (N + 2); k++)
             {
                 value = u[i][j][k] - u_old[i][j][k];
-                sum += value * value;
+                sum += (value * value);
             }
         }
     }
