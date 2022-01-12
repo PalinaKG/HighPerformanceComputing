@@ -94,15 +94,16 @@ main(int argc, char *argv[]) {
 
     //total time
     total_time = delta_t(start_t, end_t) / 1000;
-    // printf("%8.3f", total_time);
 
     //flops per second
     double flopSec = flops/total_time;
 
-    
-    /* Print n and results  */
-    printf( "Mem: %f \n",mem);
-	printf("%f %f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
+    printf("%.3f ", flops); //total flops
+    printf("%.3f ", mem/1024.0); //memory in kbytes
+    printf("%8.3f ", total_time); //total time in sec
+    printf("%d ", N); //grid size
+    printf("%.3f ", iter); //number of iterations in jacobi
+    printf("%.3f", flopSec); //flops/s
 
     // dump  results if wanted 
     switch(output_type) {
