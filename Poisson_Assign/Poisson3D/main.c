@@ -6,6 +6,7 @@
 #include "alloc3d.h"
 #include "print.h"
 #include <math.h>
+#include <time.h>
 
 #ifdef _JACOBI
 #include "jacobi.h"
@@ -18,6 +19,9 @@
 #define N_DEFAULT 100
 void boundaries(double ***u, int N);
 void initialize_f(double ***f, int N);
+
+#define mytimer clock
+#define delta_t(a,b) (1e3 * (b - a) / CLOCKS_PER_SEC)
 
 int
 main(int argc, char *argv[]) {
@@ -33,6 +37,11 @@ main(int argc, char *argv[]) {
     double 	***u = NULL;
     double  ***u_old = NULL;
     double  ***f = NULL;
+    double start; 
+	double end; 
+    double iter;
+    clock_t start_t, end_t;
+    double total_time;
 
 
     /* get the paramters from the command line */
@@ -64,7 +73,6 @@ main(int argc, char *argv[]) {
     initialize_f(f,N);
     
     
-    
     //XYZ
     for (int i = 0; i < (N + 2); i++)
     {
@@ -76,13 +84,32 @@ main(int argc, char *argv[]) {
             }
         }
     }
-   
     boundaries(u, N);
+    //x3 because we have 3 matrices, u, uold and f
+    double mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
+
+    start_t = mytimer();
     #ifdef _JACOBI
+        //the interations are dynamic, we should return the num of iteration from jacobi
         jacobi(f, u, u_old, N, iter_max, tolerance);
+        iter = 10;
     #endif
+    end_t = mytimer();
+
+    // 8 floating point operations in the jakobi update
+    double flops = 8 * N * N * N; //bæta við num of its þegar þau eru búin að pusha því
+
+    //total time
+    total_time = ((double)end_t - (double)start_t)/(double)CLOCKS_PER_SEC;
+    printf("%8.3f", total_time);
+
+    //flops per second
+    double flopSec = flops/total_time;
+
     
+    /* Print n and results  */
+	//printf("%8.3f %8.3f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
 
     // dump  results if wanted 
     switch(output_type) {
