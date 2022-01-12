@@ -1,4 +1,4 @@
-/* main.c - Poisson problem in 3D
+/* main.c - Poisson problem in 3D andri test commit
  *
  */
 #include <stdio.h>
@@ -169,18 +169,22 @@ void initialize_f(double ***f, int N)
     }
     
     int x1 = 0;
-    int x2 = floor((5/16)*N); //(1 + (-3/8)) * 1/2
+    int x2 =floor( (N*5.0/16.0) ); //(1 + (-3/8)) * 1/2
+    
     int y1 = 0;
-    int y2 = floor((1/4)*N);
-    int z1 = ceil((1/6)*N);
-    int z2 = floor((1/2)*N);
-    
-    
-    for (int i = x1; i < x2; i++)
+    int y2 = floor((1/4.0)*N);
+    int z1 = ceil((1/6.0)*N);
+    int z2 = floor((1/2.0)*N);
+//printf("5/16: %f \n",(5/16));
+    printf("x2: %d \n",x2);
+    printf("y2: %d \n",y2);
+    printf("z1: %d \n",z1);
+    printf("z2: %d \n",z2);
+    for (int i = x1; i <= x2; i++)
     {
-        for (int j = y1; j < y2; j++)
+        for (int j = y1; j <= y2; j++)
         {
-            for (int k = z1; k < z2; k++)
+            for (int k = z1; k <= z2; k++)
             {
                 f[i][j][k] = 200.0;
             }
