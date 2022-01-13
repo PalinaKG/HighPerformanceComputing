@@ -13,6 +13,7 @@ int gauss_seidel(double ***f, double ***u, double ***u_old, int N, int k_max, do
 	// var for calc frobenius norm
 	double sum, val=0.0, tmp=0.0;
     
+	
     while (d > threshold && counter < k_max) {
 	sum = 0.0;
 		// update u
@@ -32,9 +33,9 @@ int gauss_seidel(double ***f, double ***u, double ***u_old, int N, int k_max, do
         d = sqrt(sum); 
 		counter = counter + 1;
 		
-		printf("%d ", counter);
+		//printf("%d ", counter);
 
-		printf("%.3f \n", d);
+		//printf("%.3f \n", d);
     }
     return counter;
 }

@@ -20,10 +20,11 @@ int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double t
         update(N, f, u, u_old);
         d = frobenius_norm(u, u_old, N);
         counter = counter + 1;
-	    printf("%d ", counter);
-        printf("%.3f \n", d);
+	    //printf("%d ", counter);
+        //printf("%.3f \n", d);
     }
     return counter;
+
     
 }
 
