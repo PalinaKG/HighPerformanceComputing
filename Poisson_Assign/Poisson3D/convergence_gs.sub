@@ -36,7 +36,7 @@ TOL="0.01"
 
 #start T
 
-TSTART="100"
+TSTART="10"
 
 #output type
 

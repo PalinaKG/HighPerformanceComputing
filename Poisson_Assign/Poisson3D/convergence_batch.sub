@@ -36,7 +36,7 @@ TOL="0.01"
 
 #start T
 
-TSTART="100"
+TSTART="10"
 
 #output type
 
@@ -58,4 +58,3 @@ FILE_NAME="convergence_"$S".dat"
 rm  Convergence_Data/$FILE_NAME
 	./$EXECUTABLE $S $ITER $TOL $TSTART $OTYPE  | grep -v CPU >> Convergence_Data/$FILE_NAME
 done
-
