@@ -30,7 +30,6 @@ int gauss_seidel(double ***f, double ***u, double ***u_old, int N, int k_max, do
         	}
     	}
         d = sqrt(sum); 
-      	printf("%f\n",d);
 		counter = counter + 1;
     }
     return counter;
