@@ -18,7 +18,6 @@ int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double t
         update(N, f, u, u_old);
         d = frobenius_norm(u, u_old, N);
         counter = counter + 1;
-        printf("%f", d);
         
     }
     
@@ -31,7 +30,7 @@ void update(int N, double ***f, double ***u, double ***u_old)
     double delta = (1.0/(double)N)*(1.0/(double)N);
     int i,j,k;
 
-    #pragma omp parallel for default(none) shared(u,u_old,f) private(i,j,k,N,delta)
+    #pragma omp parallel for default(none) shared(u,u_old,f, N,delta) private(i,j,k)
     for (i = 1; i < (N + 1); i++)
     {
         for (j = 1; j < (N + 1); j++)
