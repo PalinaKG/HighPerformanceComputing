@@ -11,7 +11,7 @@
 #BSUB -q hpcintro
 #BSUB -n 1
 #BSUB -R "rusage[mem=2048]"
-#BSUB -W 15
+#BSUB -W 30
 # uncomment the following line, if you want to assure that your job has
 # a whole CPU for itself (shared L3 cache)
 # #BSUB -R "span[hosts=1] affinity[socket(1)]"
@@ -24,7 +24,7 @@ EXECUTABLE=poisson_j
 
 # grid sizes
 #
-SIZES="10 20 40 80 100 120 200 300"
+SIZES="10 15 20 25 40 60 80 100 120 200 "
 
 #max number of iterations
 
@@ -56,9 +56,21 @@ do
 	make clean
 	make OPT="-g $COMP"
 	FILE_NAME="jacobi_base"$COMP".dat"
-	rm  data/$FILE_NAME
+	rm  Compile_Data/$FILE_NAME
 	for S in $SIZES
 	do
-		./$EXECUTABLE $S $ITER $TOL $TSTART $OTYPE  | grep -v CPU >> data/$FILE_NAME
+		./$EXECUTABLE $S $ITER $TOL $TSTART $OTYPE  | grep -v CPU >> Compile_Data/$FILE_NAME
 	done
+done
+
+for COMP in $COMP_OPTS
+do
+        make clean
+        make OPT="-g Ofast $COMP"
+        FILE_NAME="jacobi_base-Ofast-"$COMP".dat"
+        rm  Compile_Data/$FILE_NAME
+        for S in $SIZES
+        do
+                ./$EXECUTABLE $S $ITER $TOL $TSTART $OTYPE  | grep -v CPU >> Compile_Data/$FILE_NAME
+        done
 done
