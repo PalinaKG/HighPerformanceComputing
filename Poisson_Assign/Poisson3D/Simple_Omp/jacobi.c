@@ -30,7 +30,10 @@ void update(int N, double ***f, double ***u, double ***u_old)
     double delta = (1.0/(double)N)*(1.0/(double)N);
     int i,j,k;
 
-    #pragma omp parallel for default(none) shared(u,u_old,f, N,delta) private(i,j,k)
+    #pragma omp parallel default(none) shared(u,u_old, N) \
+    private(i,j,k) firstprivate(f, delta)
+    {
+    #pragma omp for schedule(dynamic, 100)    
     for (i = 1; i < (N + 1); i++)
     {
         for (j = 1; j < (N + 1); j++)
@@ -41,6 +44,7 @@ void update(int N, double ***f, double ***u, double ***u_old)
             }
         }
     }
+    } //end of parallel
 }
 
 double frobenius_norm(double ***u, double ***u_old, int N)

@@ -138,6 +138,9 @@ main(int argc, char *argv[]) {
 
 void Initialize_U(double ***u, int N, int start_T)
 {
+    #pragma omp parallel firstprivate(N,start_T) shared(u)
+    {
+    #pragma omp for schedule(dynamic, 10)   
     for (int i = 0; i < (N + 2); i++)
     {
         for (int j = 0; j < (N + 2); j++)
@@ -149,7 +152,7 @@ void Initialize_U(double ***u, int N, int start_T)
         }
     }
     
-	
+	#pragma omp for nowait
 	for (int i = 0; i < (N + 2); i++)
     {
         for (int k = 0; k < (N + 2); k++)
@@ -162,10 +165,16 @@ void Initialize_U(double ***u, int N, int start_T)
             u[i][k][N+1] = 20.0;
         }
     }
+    }// End of paralel
 }
 
 void Initialize_F(double ***f, int N)
 {
+
+
+    #pragma omp parallel firstprivate(N) shared(f)
+    {
+    #pragma omp for schedule(dynamic, 10)   
     for (int i = 0; i < (N + 2); i++)
     {
         for (int j = 0; j < (N + 2); j++)
@@ -184,6 +193,7 @@ void Initialize_F(double ***f, int N)
     int z1 = ceil((1/6.0)*N);
     int z2 = floor((1/2.0)*N);
 
+    #pragma omp for nowait
     for (int i = x1; i <= x2; i++)
     {
         for (int j = y1; j <= y2; j++)
@@ -194,5 +204,5 @@ void Initialize_F(double ***f, int N)
             }
         }
     }
-    
+    } //end of parallel
 }
