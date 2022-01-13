@@ -33,3 +33,6 @@
 
 # files from studio analyzer
 *.er
+
+# swap files from vim
+*.swp
