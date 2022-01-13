@@ -10,16 +10,18 @@ double frobenius_norm(double ***u, double ***u_old, int N);
 
 int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double threshold) {
     float d = 1.0/0.0;
-    int k = 0;
+    int counter = 0;
 	int n = N+2;
     
-    while (d > threshold && k < k_max) {
+    while (d > threshold && counter < k_max) {
         memcpy(&u_old[0][0][0],&u[0][0][0],n*n*n*sizeof(&u[0][0][0]));
         update(N, f, u, u_old);
         d = frobenius_norm(u, u_old, N);
-        k = k + 1;
+        counter = counter + 1;
+        
     }
-    return k;
+    
+    return counter;
 }
 
 
@@ -28,7 +30,7 @@ void update(int N, double ***f, double ***u, double ***u_old)
     double delta = (1.0/(double)N)*(1.0/(double)N);
     int i,j,k;
 
-    #pragma omp parallel for default(none) shared(u,u_old,f) private(i,j,k,N,delta)
+    #pragma omp parallel for default(none) shared(u,u_old,f, N,delta) private(i,j,k)
     for (i = 1; i < (N + 1); i++)
     {
         for (j = 1; j < (N + 1); j++)
@@ -45,13 +47,13 @@ double frobenius_norm(double ***u, double ***u_old, int N)
 {
     double sum = 0.0;
     double value = 0.0;
-    for (int i = 0; i < (N + 2); i++)
+    for (int i1 = 0; i1 < (N + 2); i1++)
     {
-        for (int j = 0; j < (N + 2); j++)
+        for (int j1 = 0; j1 < (N + 2); j1++)
         {
-            for (int k = 0; k < (N + 2); k++)
+            for (int k1 = 0; k1 < (N + 2); k1++)
             {
-                value = u[i][j][k] - u_old[i][j][k];
+                value = u[i1][j1][k1] - u_old[i1][j1][k1];
                 sum += (value * value);
             }
         }

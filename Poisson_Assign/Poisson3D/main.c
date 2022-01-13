@@ -102,7 +102,7 @@ main(int argc, char *argv[]) {
     printf("%.3f ", mem/1024.0); //memory in kbytes
     printf("%8.3f ", total_time); //total time in sec
     printf("%d ", N); //grid size
-    printf("%.3f ", iter); //number of iterations in jacobi
+    printf("%d ", iter); //number of iterations in jacobi
     printf("%.3f", flopSec); //flops/s
 
     // dump  results if wanted 

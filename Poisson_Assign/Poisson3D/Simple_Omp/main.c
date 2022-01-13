@@ -40,7 +40,7 @@ main(int argc, char *argv[]) {
     double  ***f = NULL;
     double start; 
 	double end; 
-    int iter;
+    int iter = 10;
     clock_t start_t, end_t;
     double total_time;
 
@@ -70,7 +70,7 @@ main(int argc, char *argv[]) {
         exit(-1);
     }
     
-    
+    start_t = mytimer();
     Initialize_F(f,N);
     Initialize_U(u, N,start_T);
     
@@ -79,27 +79,33 @@ main(int argc, char *argv[]) {
     float mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
 
-    start_t = mytimer();
+    
     #ifdef _JACOBI
         //the interations are dynamic, we should return the num of iteration from jacobi
         iter = jacobi(f, u, u_old, N, iter_max, tolerance);
     #endif
+    #ifdef _GAUSS_SEIDEL
+        iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
+    #endif
     end_t = mytimer();
+
+    
 
     // 8 floating point operations in the jakobi update
     double flops = 8 * N * N * N; //bæta við num of its þegar þau eru búin að pusha því
 
     //total time
     total_time = delta_t(start_t, end_t) / 1000;
-    // printf("%8.3f", total_time);
 
     //flops per second
     double flopSec = flops/total_time;
 
-    
-    /* Print n and results  */
-    printf( "Mem: %f \n",mem);
-	printf("%f %f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
+    printf("Flops: %.3f\n ", flops); //total flops
+    printf("Memory: %.3f\n ", mem/1024.0); //memory in kbytes
+    printf("Total Time in s: %8.3f \n", total_time); //total time in sec
+    printf("Grid size: %d \n", N); //grid size
+    printf("Iterations : %d \n", iter); //number of iterations in jacobi
+    printf("Flops/sec: %.3f\n", flopSec); //flops/s
 
     // dump  results if wanted 
     switch(output_type) {
