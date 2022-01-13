@@ -34,6 +34,7 @@ main(int argc, char *argv[]) {
     int		output_type = 0;
     char	*output_prefix = "poisson_res";
     char        *output_ext    = "";
+    char        *fun_type = "";
     char	output_filename[FILENAME_MAX];
     double 	***u = NULL;
     double  ***u_old = NULL;
@@ -83,9 +84,11 @@ main(int argc, char *argv[]) {
     #ifdef _JACOBI
         //the interations are dynamic, we should return the num of iteration from jacobi
         iter = jacobi(f, u, u_old, N, iter_max, tolerance);
+	fun_type = "j";
     #endif
     #ifdef _GAUSS_SEIDEL
-        iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
+	iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
+	fun_type = "gs";
     #endif
     end_t = omp_get_wtime();
 
@@ -104,8 +107,12 @@ main(int argc, char *argv[]) {
 
     
     /* Print n and results  */
-	printf("%f %f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
-
+    printf("%.3f ", flops); //total Mflops
+    printf("%.3f ", mem/1024.0); //memory in kbytes
+    printf("%8.3f ", total_time); //total time in sec
+    printf("%d ", N); //grid size
+    printf("%d ", iter); //number of iterations in jacobi
+    printf("%.3f\n", flops/total_time); //flops/s
     // dump  results if wanted 
     switch(output_type) {
 	case 0:
@@ -119,8 +126,8 @@ main(int argc, char *argv[]) {
 	    break;
 	case 4:
 	    output_ext = ".vtk";
-	    sprintf(output_filename, "%s_%d%s", output_prefix, N+2, output_ext);
-	    fprintf(stderr, "Write VTK file to %s: ", output_filename);
+	    sprintf(output_filename, "%s_%s_%d%s", output_prefix, fun_type, N, output_ext);
+	    fprintf(stderr, "Write VTK file to %s: \n", output_filename);
 	    print_vtk(output_filename, N+2, u);
 	    break;
 	default:
@@ -130,7 +137,9 @@ main(int argc, char *argv[]) {
 
     // de-allocate memory
     free(u);
-
+    free(u_old);
+    free(f);
+    
     return(0);
 }
 
