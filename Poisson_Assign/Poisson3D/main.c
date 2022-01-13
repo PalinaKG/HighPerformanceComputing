@@ -103,12 +103,7 @@ main(int argc, char *argv[]) {
     printf("%8.3f ", total_time); //total time in sec
     printf("%d ", N); //grid size
     printf("%d ", iter); //number of iterations in jacobi
-<<<<<<< HEAD
-    printf("%.3f\n", flopSec); //flops/s
-=======
-    printf("%.3f", flops/total_time); //Mflops/s
-
->>>>>>> 5bfcd7b71e2fc87606dcf784def723ccf25e716a
+    printf("%.3f\n", flops/total_time); //flops/s
     // dump  results if wanted 
     switch(output_type) {
 	case 0:
@@ -133,12 +128,9 @@ main(int argc, char *argv[]) {
 
     // de-allocate memory
     free(u);
-<<<<<<< HEAD
-=======
     free(u_old);
     free(f);
 
->>>>>>> 5bfcd7b71e2fc87606dcf784def723ccf25e716a
     return(0);
 }
 
