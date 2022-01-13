@@ -24,11 +24,11 @@ EXECUTABLE=poisson_j
 
 # grid sizes
 #
-SIZES="100"
+SIZES="10 20 40 80 100 120 200 300"
 
 #max number of iterations
 
-ITER="100"
+ITER="1000"
 
 #tolerance
 
@@ -45,14 +45,20 @@ OTYPE="5"
 # enable(1)/disable(0) result checking
 export MATMULT_COMPARE=0
 
+COMPS="-O2 -O3 -Ofast"
+COMP_OPTS="funsafe-loop-optimizations floop-interchange fpeel-loops funroll-loops"
+
 # start the collect command with the above settings
 lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)|cache'
 module load gcc
-make clean
-make
-rm data/jacobi_base.dat
-for S in $SIZES
+for COMP in $COMPS
 do
-		./$EXECUTABLE $S $ITER $TOL $TSTART $OTYPE  | grep -v CPU >> data/"jacobi_base.dat"
+	make clean
+	make OPT="-g $COMP"
+	FILE_NAME="jacobi_base"$COMP".dat"
+	rm  data/$FILE_NAME
+	for S in $SIZES
+	do
+		./$EXECUTABLE $S $ITER $TOL $TSTART $OTYPE  | grep -v CPU >> data/$FILE_NAME
+	done
 done
-
