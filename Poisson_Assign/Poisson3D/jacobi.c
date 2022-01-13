@@ -9,6 +9,7 @@ void update(int N, double ***f, double ***u, double ***u_old);
 double frobenius_norm(double ***u, double ***u_old, int N);
 
 int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double threshold) {
+    
     float d = 1.0/0.0;
     int counter = 0;
 	int n = N+2;
@@ -19,9 +20,11 @@ int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double t
         update(N, f, u, u_old);
         d = frobenius_norm(u, u_old, N);
         counter = counter + 1;
+	    //printf("%d ", counter);
+        //printf("%.3f \n", d);
     }
-    printf("%d",counter);
     return counter;
+
     
 }
 

@@ -89,20 +89,26 @@ main(int argc, char *argv[]) {
     #endif
     end_t = mytimer();
     // 8 floating point operations in the jakobi update
-    double flops = 8 * N * N * N; //bæta við num of its þegar þau eru búin að pusha því
+    double flops = 8 * N * N * N * (double)iter / 10e6;
+
 
     //total time
     total_time = delta_t(start_t, end_t) / 1000;
 
     //flops per second
-    double flopSec = flops/total_time;
+    //double flopSec = flops/total_time;
 
-    printf("%.3f ", flops); //total flops
+    printf("%.3f ", flops); //total Mflops
     printf("%.3f ", mem/1024.0); //memory in kbytes
     printf("%8.3f ", total_time); //total time in sec
     printf("%d ", N); //grid size
     printf("%d ", iter); //number of iterations in jacobi
+<<<<<<< HEAD
     printf("%.3f\n", flopSec); //flops/s
+=======
+    printf("%.3f", flops/total_time); //Mflops/s
+
+>>>>>>> 5bfcd7b71e2fc87606dcf784def723ccf25e716a
     // dump  results if wanted 
     switch(output_type) {
 	case 0:
@@ -127,6 +133,12 @@ main(int argc, char *argv[]) {
 
     // de-allocate memory
     free(u);
+<<<<<<< HEAD
+=======
+    free(u_old);
+    free(f);
+
+>>>>>>> 5bfcd7b71e2fc87606dcf784def723ccf25e716a
     return(0);
 }
 
