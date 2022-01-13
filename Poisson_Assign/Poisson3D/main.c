@@ -98,12 +98,12 @@ main(int argc, char *argv[]) {
     //flops per second
     double flopSec = flops/total_time;
 
-    printf("%.3f ", flops); //total flops
-    printf("%.3f ", mem/1024.0); //memory in kbytes
-    printf("%8.3f ", total_time); //total time in sec
-    printf("%d ", N); //grid size
-    printf("%d ", iter); //number of iterations in jacobi
-    printf("%.3f", flopSec); //flops/s
+  //  printf("%.3f ", flops); //total flops
+  //  printf("%.3f ", mem/1024.0); //memory in kbytes
+  //  printf("%8.3f ", total_time); //total time in sec
+  //  printf("%d ", N); //grid size
+  //  printf("%d ", iter); //number of iterations in jacobi
+  //  printf("%.3f", flopSec); //flops/s
 
     // dump  results if wanted 
     switch(output_type) {
