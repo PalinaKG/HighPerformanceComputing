@@ -84,6 +84,9 @@ main(int argc, char *argv[]) {
         //the interations are dynamic, we should return the num of iteration from jacobi
         iter = jacobi(f, u, u_old, N, iter_max, tolerance);
     #endif
+    #ifdef _GAUSS_SEIDEL
+        iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
+    #endif
     end_t = mytimer();
 
     // 8 floating point operations in the jakobi update
@@ -98,7 +101,6 @@ main(int argc, char *argv[]) {
 
     
     /* Print n and results  */
-    printf( "Mem: %f \n",mem);
 	printf("%f %f %d %d %8.3f\n", mem/1024.0, flopSec/1024.0, N, iter, total_time);
 
     // dump  results if wanted 
