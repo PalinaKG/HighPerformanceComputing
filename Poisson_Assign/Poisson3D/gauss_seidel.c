@@ -14,7 +14,9 @@ int gauss_seidel(double ***f, double ***u, double ***u_old, int N, int k_max, do
 	double sum, val=0.0, tmp=0.0;
     
     while (d > threshold && counter < k_max) {
-    	sum = 0.0;
+    	printf("%.3f ", counter);
+	printf("%.3f \n", d);
+	sum = 0.0;
 		// update u
 		for (int i = 1; i < (N + 1); i++)
     	{
