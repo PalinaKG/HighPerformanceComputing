@@ -79,7 +79,7 @@ main(int argc, char *argv[]) {
     float mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
 
-    start_t = mytimer();
+    start_t = omp_get_wtime();
     #ifdef _JACOBI
         //the interations are dynamic, we should return the num of iteration from jacobi
         iter = jacobi(f, u, u_old, N, iter_max, tolerance);
@@ -87,14 +87,15 @@ main(int argc, char *argv[]) {
     #ifdef _GAUSS_SEIDEL
         iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
     #endif
-    end_t = mytimer();
+    end_t = omp_get_wtime();
 
     // 8 floating point operations in the jakobi update
     double flops = 8 * N * N * N; //bæta við num of its þegar þau eru búin að pusha því
 
     //total time
-    total_time = delta_t(start_t, end_t) / 1000;
+    //total_time = delta_t(start_t, end_t) / 1000;
     // printf("%8.3f", total_time);
+    total_time = end_t - start_t;
 
     //flops per second
     double flopSec = flops/total_time;
