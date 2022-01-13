@@ -30,9 +30,12 @@
 *.exe
 *.out
 *.apperintf("%d",i);
+poisson_gs
+poisson_j
 
 # files from studio analyzer
 *.er
 
 # swap files from vim
 *.swp
+
