@@ -51,7 +51,7 @@ module load gcc
 
 make clean
 make OPT="-g"
-FILE_NAME="Simp_omp_gs.dat"
+FILE_NAME="Simp_omp_gs_op.dat"
 rm  Data/$FILE_NAME
 for th in $THREADS
 do
