@@ -13,21 +13,14 @@ import matplotlib.pyplot as plt
 
 data = np.loadtxt("Simple_Omp/Data/Simp_omp_gs.dat",unpack=True)
 
-
-N = data[3]
-
-
-flops = data[5]
+threads = [1, 2, 3, 4, 5, 7, 10, 12, 15, 17, 20, 24]
 time = data[2]
-iterations = data[4]
 
-
-
-
-
+speedup = time[0]/time
 
 plt.figure(1)
-plt.plot(N,iterations,'*-')
-plt.title("")
-plt.xlabel("N")
-plt.ylabel("Iterations")
+plt.plot(threads,speedup,'*-')
+plt.plot([0, 24], [0, 24],'-')
+plt.title("Simple OpenMP for Gauss-Seidel")
+plt.xlabel("Threads")
+plt.ylabel("Speed up")
