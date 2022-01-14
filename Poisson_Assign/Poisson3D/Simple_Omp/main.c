@@ -95,7 +95,7 @@ main(int argc, char *argv[]) {
     
 
     // 8 floating point operations in the jakobi update
-    double flops = 8 * N * N * N; //bæta við num of its þegar þau eru búin að pusha því
+    double flops = 8 * N * N * N * (double)iter / 10e6; //bæta við num of its þegar þau eru búin að pusha því
 
     //total time
     //total_time = delta_t(start_t, end_t) / 1000;
