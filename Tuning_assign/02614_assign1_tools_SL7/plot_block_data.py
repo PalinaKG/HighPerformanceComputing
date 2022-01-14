@@ -16,6 +16,7 @@ block_sizes = [2,4,8,16,32,64,128,256,512,1028,2056]
 for size in sizes:
     print("BlockS_Data/blk_"+size+".dat")
     data = np.loadtxt("BlockS_Data/blk_"+size+".dat",unpack=True)
+    mem = data[0]
     mf = data[1]
     max_index = np.argmax(mf)
 
@@ -23,7 +24,7 @@ for size in sizes:
     plt.plot(block_sizes,mf,'*-')
 
     
-    plt.title("Matrix size: " + size)
+    plt.title("Matrix size: " + size + "\n Memory: " + str(mem[0]))
     plt.xlabel("Block size")
     plt.ylabel("Performance [Mflops/s]")
     plt.xscale('log', basex=2)
