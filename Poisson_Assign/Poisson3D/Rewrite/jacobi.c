@@ -33,14 +33,14 @@ double update(int N, double ***f, double ***u, double ***u_old)
     double sum = 0.0;
     double value = 0.0;
     double temp_unew = 0.0;
-
+	int i=0,j=0,k=0;
      #pragma omp parallel for default(none) shared(u,u_old, N) \
     private(i,j,k,value) firstprivate(f, delta) schedule(dynamic,3) reduction(+: sum)
-    for (int i = 1; i < (N + 1); i++)
+    for (i = 1; i < (N + 1); i++)
     {
-        for (int j = 1; j < (N + 1); j++)
+        for (j = 1; j < (N + 1); j++)
         {
-            for (int k = 1; k < (N + 1); k++)
+            for (k = 1; k < (N + 1); k++)
             {
                 u[i][j][k]= (1.0/6.0)*(u_old[i-1][j][k] + u_old[i+1][j][k] + u_old[i][j-1][k] \
                 + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] \
