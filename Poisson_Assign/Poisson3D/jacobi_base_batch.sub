@@ -36,7 +36,7 @@ TOL="0.01"
 
 #start T
 
-TSTART="100"
+TSTART="10"
 
 #output type
 
@@ -66,7 +66,7 @@ done
 for COMP in $COMP_OPTS
 do
         make clean
-        make OPT="-g Ofast $COMP"
+        make OPT="-g -Ofast $COMP"
         FILE_NAME="jacobi_base-Ofast-"$COMP".dat"
         rm  Compile_Data/$FILE_NAME
         for S in $SIZES
