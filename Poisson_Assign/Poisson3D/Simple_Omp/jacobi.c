@@ -16,14 +16,9 @@ int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double t
     
     while (d > threshold && counter < k_max) {
         memcpy(&u_old[0][0][0],&u[0][0][0],n*n*n*sizeof(&u[0][0][0]));
-        // temp_uold = u_old;
-        // u_old=u;
-        // u = temp_uold;
         update(N, f, u, u_old);
         d = frobenius_norm(u, u_old, N);
         counter = counter + 1;
-        printf("%d", counter);
-        printf("%f", d);
     }
     
     return counter;
@@ -36,10 +31,8 @@ void update(int N, double ***f, double ***u, double ***u_old)
     int i,j,k;
     
 
-    #pragma omp parallel default(none) shared(u,u_old, N) \
+    #pragma omp parallel for default(none) shared(u,u_old, N) \
     private(i,j,k) firstprivate(f, delta)
-    {
-    #pragma omp for schedule(dynamic, 100)    
     for (i = 1; i < (N + 1); i++)
     {
         for (j = 1; j < (N + 1); j++)
@@ -50,7 +43,6 @@ void update(int N, double ***f, double ***u, double ***u_old)
             }
         }
     }
-    } //end of parallel
 }
 
 double frobenius_norm(double ***u, double ***u_old, int N)
