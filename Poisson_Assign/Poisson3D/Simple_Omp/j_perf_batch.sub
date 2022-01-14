@@ -50,7 +50,7 @@ lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)|cache'
 module load gcc
 
 make clean
-make OPT="-g -Ofast"
+make
 
 for th in $THREADS
 do

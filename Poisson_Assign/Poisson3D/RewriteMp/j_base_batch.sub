@@ -50,7 +50,7 @@ lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)|cache'
 module load gcc
 
 make clean
-make OPT="-g -Ofast"
+make
 FILE_NAME="Simp_omp_jV2.dat"
 rm  Data/$FILE_NAME
 for th in $THREADS
