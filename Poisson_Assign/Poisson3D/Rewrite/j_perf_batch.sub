@@ -54,7 +54,7 @@ make OPT="-g -Ofast"
 
 for th in $THREADS
 do
-	FILE_NAME="Simp_omp_j"$th".dat"
+	FILE_NAME="Simp_omp_jV1"$th".dat"
 	rm  Data/$FILE_NAME
 	for S in $SIZES
 	do
