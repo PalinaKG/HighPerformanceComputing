@@ -20,8 +20,6 @@ int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double t
         memcpy(&u_old[0][0][0],&u[0][0][0],n*n*n*sizeof(&u[0][0][0]));
         d = update(N, f, u, u_old);
         counter = counter + 1;
-	    //printf("%d ", counter);
-        //printf("%.3f \n", d);
     }
     return counter;
 
