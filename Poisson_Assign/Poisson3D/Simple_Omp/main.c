@@ -42,7 +42,7 @@ main(int argc, char *argv[]) {
     double start; 
 	double end; 
     int iter = 10;
-    clock_t start_t, end_t;
+    double start_t, end_t;
     double total_time;
 
 
