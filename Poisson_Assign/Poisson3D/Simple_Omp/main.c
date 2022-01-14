@@ -34,7 +34,6 @@ main(int argc, char *argv[]) {
     int		output_type = 0;
     char	*output_prefix = "poisson_res";
     char        *output_ext    = "";
-    char        *fun_type = "";
     char	output_filename[FILENAME_MAX];
     double 	***u = NULL;
     double  ***u_old = NULL;
@@ -71,7 +70,8 @@ main(int argc, char *argv[]) {
         exit(-1);
     }
     
-    start_t = mytimer();
+ 
+    start_t = omp_get_wtime();
     Initialize_F(f,N);
     Initialize_U(u, N,start_T);
     
@@ -80,39 +80,36 @@ main(int argc, char *argv[]) {
     float mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
 
-    start_t = omp_get_wtime();
+   
     #ifdef _JACOBI
         //the interations are dynamic, we should return the num of iteration from jacobi
         iter = jacobi(f, u, u_old, N, iter_max, tolerance);
-	fun_type = "j";
     #endif
     #ifdef _GAUSS_SEIDEL
-	iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
-	fun_type = "gs";
+        iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
     #endif
     end_t = omp_get_wtime();
 
     
 
     // 8 floating point operations in the jakobi update
-    double flops = 8 * (N+2) * (N+2) * (N+2) * (double)iter / 10e6; //bæta við num of its þegar þau eru búin að pusha því
+    double flops = 8.0 * (N+2) * (N+2) * (N+2) * (double)iter / 1e6;
 
     //total time
     //total_time = delta_t(start_t, end_t) / 1000;
     // printf("%8.3f", total_time);
-    total_time = end_t - start_t;
+    total_time = (end_t - start_t);
 
-    //flops per second
-    double flopSec = flops/total_time;
-
-    
+   
     /* Print n and results  */
+	
     printf("%.3f ", flops); //total Mflops
     printf("%.3f ", mem/1024.0); //memory in kbytes
     printf("%8.3f ", total_time); //total time in sec
     printf("%d ", N); //grid size
     printf("%d ", iter); //number of iterations in jacobi
     printf("%.3f\n", flops/total_time); //flops/s
+
     // dump  results if wanted 
     switch(output_type) {
 	case 0:
@@ -126,8 +123,8 @@ main(int argc, char *argv[]) {
 	    break;
 	case 4:
 	    output_ext = ".vtk";
-	    sprintf(output_filename, "%s_%s_%d%s", output_prefix, fun_type, N, output_ext);
-	    fprintf(stderr, "Write VTK file to %s: \n", output_filename);
+	    sprintf(output_filename, "%s_%d%s", output_prefix, N+2, output_ext);
+	    fprintf(stderr, "Write VTK file to %s: ", output_filename);
 	    print_vtk(output_filename, N+2, u);
 	    break;
 	default:
@@ -137,18 +134,13 @@ main(int argc, char *argv[]) {
 
     // de-allocate memory
     free(u);
-    free(u_old);
-    free(f);
-    
+
     return(0);
 }
 
 
 void Initialize_U(double ***u, int N, int start_T)
 {
-    #pragma omp parallel firstprivate(N,start_T) shared(u)
-    {
-    #pragma omp for schedule(dynamic, 10)   
     for (int i = 0; i < (N + 2); i++)
     {
         for (int j = 0; j < (N + 2); j++)
@@ -160,7 +152,7 @@ void Initialize_U(double ***u, int N, int start_T)
         }
     }
     
-	#pragma omp for nowait
+	
 	for (int i = 0; i < (N + 2); i++)
     {
         for (int k = 0; k < (N + 2); k++)
@@ -173,16 +165,10 @@ void Initialize_U(double ***u, int N, int start_T)
             u[i][k][N+1] = 20.0;
         }
     }
-    }// End of paralel
 }
 
 void Initialize_F(double ***f, int N)
 {
-
-
-    #pragma omp parallel firstprivate(N) shared(f)
-    {
-    #pragma omp for schedule(dynamic, 10)   
     for (int i = 0; i < (N + 2); i++)
     {
         for (int j = 0; j < (N + 2); j++)
@@ -201,7 +187,6 @@ void Initialize_F(double ***f, int N)
     int z1 = ceil((1/6.0)*N);
     int z2 = floor((1/2.0)*N);
 
-    #pragma omp for nowait
     for (int i = x1; i <= x2; i++)
     {
         for (int j = y1; j <= y2; j++)
@@ -212,5 +197,5 @@ void Initialize_F(double ***f, int N)
             }
         }
     }
-    } //end of parallel
+    
 }

@@ -26,6 +26,7 @@ void Initialize_F(double ***f, int N);
 
 int
 main(int argc, char *argv[]) {
+
     int 	N = N_DEFAULT;
     int 	iter_max = 1000;
     double	tolerance;
@@ -34,14 +35,13 @@ main(int argc, char *argv[]) {
     char	*output_prefix = "poisson_res";
     char        *output_ext    = "";
     char	output_filename[FILENAME_MAX];
-    char    *fun_type = "";
-	double 	***u = NULL;
+    double 	***u = NULL;
     double  ***u_old = NULL;
     double  ***f = NULL;
     double start; 
 	double end; 
-    int iter;
-    clock_t start_t, end_t;
+    int iter = 10;
+    double start_t, end_t;
     double total_time;
 
 
@@ -53,6 +53,7 @@ main(int argc, char *argv[]) {
     if (argc == 6) {
 	output_type = atoi(argv[5]);  // ouput type
     }
+
     // allocate memory
     if ( (u = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
         perror("array u: allocation failed");
@@ -69,7 +70,9 @@ main(int argc, char *argv[]) {
         exit(-1);
     }
     
-	Initialize_F(f,N);
+ 
+    start_t = omp_get_wtime();
+    Initialize_F(f,N);
     Initialize_U(u, N,start_T);
     
 
@@ -77,33 +80,36 @@ main(int argc, char *argv[]) {
     float mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
 
-    start_t = mytimer();
+   
     #ifdef _JACOBI
         //the interations are dynamic, we should return the num of iteration from jacobi
         iter = jacobi(f, u, u_old, N, iter_max, tolerance);
-		fun_type = "j";
     #endif
     #ifdef _GAUSS_SEIDEL
-		iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
-		fun_type = "gs";
+        iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
     #endif
-    end_t = mytimer();
-    // 8 floating point operations in the jakobi update
-    double flops = 8 * N * N * N * (double)iter / 10e6;
+    end_t = omp_get_wtime();
 
+    
+
+    // 8 floating point operations in the jakobi update
+    double flops = 8.0 * (N+2) * (N+2) * (N+2) * (double)iter / 1e6;
 
     //total time
-    total_time = delta_t(start_t, end_t) / 1000;
+    //total_time = delta_t(start_t, end_t) / 1000;
+    // printf("%8.3f", total_time);
+    total_time = (end_t - start_t);
 
-    //flops per second
-    //double flopSec = flops/total_time;
-
+   
+    /* Print n and results  */
+	
     printf("%.3f ", flops); //total Mflops
     printf("%.3f ", mem/1024.0); //memory in kbytes
     printf("%8.3f ", total_time); //total time in sec
     printf("%d ", N); //grid size
     printf("%d ", iter); //number of iterations in jacobi
     printf("%.3f\n", flops/total_time); //flops/s
+
     // dump  results if wanted 
     switch(output_type) {
 	case 0:
@@ -111,14 +117,14 @@ main(int argc, char *argv[]) {
 	    break;
 	case 3:
 	    output_ext = ".bin";
-	    sprintf(output_filename, "%s_%d%s", output_prefix, fun_type, N, output_ext);
+	    sprintf(output_filename, "%s_%d%s", output_prefix, N, output_ext);
 	    fprintf(stderr, "Write binary dump to %s: ", output_filename);
-	    print_binary(output_filename, N+2, u);
+	    print_binary(output_filename, N, u);
 	    break;
 	case 4:
-	    output_ext = ".vtk";		
-	    sprintf(output_filename, "%s_%s_%d%s", output_prefix, fun_type, N, output_ext);
-	    fprintf(stderr, "Write VTK file to %s: \n", output_filename);
+	    output_ext = ".vtk";
+	    sprintf(output_filename, "%s_%d%s", output_prefix, N+2, output_ext);
+	    fprintf(stderr, "Write VTK file to %s: ", output_filename);
 	    print_vtk(output_filename, N+2, u);
 	    break;
 	default:
@@ -128,8 +134,6 @@ main(int argc, char *argv[]) {
 
     // de-allocate memory
     free(u);
-    free(u_old);
-    free(f);
 
     return(0);
 }

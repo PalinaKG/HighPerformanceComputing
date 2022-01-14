@@ -14,12 +14,12 @@ OBJS_GS	= $(MAIN_GS) gauss_seidel.o
 #
 CC	= gcc
 DEFS	= 
-OPT	= -g -O3 
+OPT	= -g -Ofast -funsafe-loop-optimizations
 IPO	= 
 ISA	= 
 CHIP	= 
 ARCH	= 
-PARA	= 
+PARA	= -fopenmp 
 CFLAGS	= $(DEFS) $(ARCH) $(OPT) $(ISA) $(CHIP) $(IPO) $(PARA) $(XOPTS)
 LDFLAGS = -lm 
 
