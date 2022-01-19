@@ -51,7 +51,7 @@ lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)|cache'
 module load gcc
 
 make clean
-make OPT="-g -Ofast"
+make OPT="-g -Ofast -funsafe-loop-optimizations"
 FILE_NAME="base_gs.dat"
 rm  Base/$FILE_NAME
 for S in $SIZES

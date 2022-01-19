@@ -89,7 +89,11 @@ main(int argc, char *argv[]) {
     #endif
     end_t = mytimer();
     // 8 floating point operations in the jakobi update
+<<<<<<< HEAD
     double flops = 8.0 * (double)(N+2) * (double)(N+2) * (double)(N+2) * (double)iter; //flops
+=======
+    double flops = 8 * (N+2) * (N+2) * (N+2) * (double)iter / 1e6;
+>>>>>>> e5ffc68bd02e2e83e9d30b32a80682193e997864
 
 
     //total time
