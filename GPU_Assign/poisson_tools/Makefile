@@ -1,7 +1,7 @@
-TARGET= example3d
-OBJS	= alloc3d.o alloc3d_gpu.o transfer3d_gpu.o example3d.o
+TARGET= jacobi
+OBJS	= main.o jacobi.o alloc3d.o alloc3d_gpu.o transfer3d_gpu.o print.o
 
-OPT	= -g -O3
+OPT	= -g -Ofast -funsafe-loop-optimizations
 ISA	= 
 PARA	= -fopenmp
 
@@ -18,9 +18,6 @@ CFLAGS	= $(OPT) $(ISA) $(PARA) $(XOPT)
 CUDA_PATH ?= /appl/cuda/11.5.1
 INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/common/inc
 
-module load cuda/11.5.1
-module load gcc/10.3.0-binutils-2.36.1
-
 all: $(TARGET)
 
 $(TARGET): $(OBJS) 
@@ -32,3 +29,10 @@ $(TARGET): $(OBJS)
 
 clean:
 	@/bin/rm -f *.o $(TARGET)
+
+# DO NOT DELETE
+
+main.o: main.cu jacobi.h alloc3d.h alloc3d_gpu.h transfer3d_gpu.h print.h
+alloc3d.o : alloc3d.h
+alloc3d_gpu.o : alloc3d_gpu.h 
+print.o: print.h

@@ -8,13 +8,16 @@
 #include "transfer3d_gpu.h"
 
 void update(int N, double ***f, double ***u, double ***u_old);
+void jacobi(double ***f_h, double ***u_h, double ***u_old_h, int N, int k_max);
+void jacobi_seq(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max);
+__global__ void kernel_seq(int N, double ***f, double ***u, double ***u_old);
 
 
 //****************PART 0 - REFERENCE COMPARISON VERSION*******************
 // reference version from assignment 2
 // threshold has been removed as well as norm calculations
 // that it - stop criteria removed for simplicity
-void jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double threshold) {
+void jacobi(double ***f, double ***u, double ***u_old, int N, int k_max) {
     
 	int n = N+2;
     double ***temp_uold;
@@ -57,7 +60,8 @@ void update(int N, double ***f, double ***u, double ***u_old)
 
 
 //****************PART 1 - sTART OF Sequential GPU version (baseline)  *******************
-void jacobi_seq(f_h, u_h, u_old_h, N, iter_max){
+void jacobi_seq(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max){
+    
 
     //declare u, u_old and f for GPU side
     double 	***u_d = NULL;
@@ -83,24 +87,24 @@ void jacobi_seq(f_h, u_h, u_old_h, N, iter_max){
     }
 
     // do a CPU → GPU transfer of u and f for the initialized data
-    transfer_3d_from_1d(u_d, u_h[0][0], N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
-    transfer_3d_from_1d(f_d, f_h[0][0], N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
-    transfer_3d_from_1d(u_old_d, u_old_h[0][0], N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
+    transfer_3d(u_d, u_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
+    transfer_3d(f_d, f_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
+    transfer_3d(u_old_d, u_old_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
 
     double ***temp_uold;
     // Launch your Jacobi iteration kernel inside a CPU controlled iteration loop to get
     // global synchronization between each iteration step
     for (int i = 0; i < iter_max; i++) {
-        kernel_seq<<1,1>>(N, f_d, u_d, u_old_d);
-        temp_uold = u_old;
-        u_old=u;
-        u = temp_uold;
+        temp_uold = u_old_d;
+        u_old_d=u_d;
+        u_d = temp_uold;
+        kernel_seq<<<1,1>>>(N, f_d, u_d, u_old_d);
     }
 
     // When all iterations are done, transfer the result from GPU → CPU
-    transfer_3d_to_1d(u_h, u_d[0][0], N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
-    transfer_3d_to_1d(f_h, f_d[0][0], N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
-    transfer_3d_to_1d(u_old_h, u_old_d[0][0], N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d(u_h, u_d, N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d(f_h, f_d, N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d(u_old_h, u_old_d, N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
 
     free_gpu(u_d);
     free_gpu(u_old_d);

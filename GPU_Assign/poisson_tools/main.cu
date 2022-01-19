@@ -8,14 +8,7 @@
 #include <math.h>
 #include <time.h>
 #include <omp.h>
-
-#ifdef _JACOBI
 #include "jacobi.h"
-#endif
-
-#ifdef _GAUSS_SEIDEL
-#include "gauss_seidel.h"
-#endif
 
 #define N_DEFAULT 100
 void Initialize_U(double ***u, int N, int start_t);
@@ -83,14 +76,10 @@ main(int argc, char *argv[]) {
     float mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
 
-    #ifdef _JACOBI
-        //the iterations are static and we're always returning the iter_max value
-        jacobi_seq(f_h, u_h, u_old_h, N, iter_max, tolerance);
-        iter = iter_max;
-    #endif
-    #ifdef _GAUSS_SEIDEL
-        iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
-    #endif
+    //the iterations are static and we're always returning the iter_max value
+    jacobi_seq(f_h, u_h, u_old_h, N, iter_max);
+    iter = iter_max;
+
     end_t = omp_get_wtime();
 
     
@@ -122,13 +111,7 @@ main(int argc, char *argv[]) {
 	    output_ext = ".bin";
 	    sprintf(output_filename, "%s_%d%s", output_prefix, N, output_ext);
 	    fprintf(stderr, "Write binary dump to %s: ", output_filename);
-	    print_binary(output_filename, N, u);
-	    break;
-	case 4:
-	    output_ext = ".vtk";
-	    sprintf(output_filename, "%s_%d%s", output_prefix, N+2, output_ext);
-	    fprintf(stderr, "Write VTK file to %s: ", output_filename);
-	    print_vtk(output_filename, N+2, u);
+	    print_binary(output_filename, N, u_h);
 	    break;
 	default:
 	    fprintf(stderr, "Non-supported output type!\n");
