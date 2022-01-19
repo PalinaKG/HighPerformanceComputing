@@ -35,14 +35,16 @@ main(int argc, char *argv[]) {
     char	*output_prefix = "poisson_res";
     char        *output_ext    = "";
     char	output_filename[FILENAME_MAX];
-    double 	***u = NULL;
-    double  ***u_old = NULL;
-    double  ***f = NULL;
+    double 	***u_h = NULL;
+    double  ***u_old_h = NULL;
+    double  ***f_h = NULL;
     double start; 
 	double end; 
     int iter = 10;
     double start_t, end_t;
     double total_time;
+
+    const long nElms = N * N * N; // Number of elements.
 
 
     /* get the paramters from the command line */
@@ -54,36 +56,37 @@ main(int argc, char *argv[]) {
 	output_type = atoi(argv[5]);  // ouput type
     }
 
-    // allocate memory
-    if ( (u = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
-        perror("array u: allocation failed");
+    // Allocate 3x 3d array in host memory.
+    if ( (u_h = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
+        perror("array u_h: allocation failed");
         exit(-1);
     }
     
-    if ( (f = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
-        perror("array u: allocation failed");
+    if ( (f_h = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
+        perror("array f_h: allocation failed");
         exit(-1);
     }
     
-    if ( (u_old = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
-        perror("array u: allocation failed");
+    if ( (u_old_h = d_malloc_3d(N+2, N+2, N+2)) == NULL ) {
+        perror("array u_old_h: allocation failed");
         exit(-1);
     }
-    
- 
+
     start_t = omp_get_wtime();
-    Initialize_F(f,N);
-    Initialize_U(u, N,start_T);
+
+    // let the CPU initialize vectors u and f
+    Initialize_F(f_h,N);
+    Initialize_U(u_h, N,start_T);
     
 
 	//x3 because we have 3 matrices, u, uold and f
     float mem = sizeof(double) * (N+2) * (N+2) * (N+2) * 3;
 
 
-   
     #ifdef _JACOBI
-        //the interations are dynamic, we should return the num of iteration from jacobi
-        iter = jacobi(f, u, u_old, N, iter_max, tolerance);
+        //the iterations are static and we're always returning the iter_max value
+        jacobi_seq(f_h, u_h, u_old_h, N, iter_max, tolerance);
+        iter = iter_max;
     #endif
     #ifdef _GAUSS_SEIDEL
         iter = gauss_seidel(f, u, u_old, N, iter_max, tolerance);
@@ -133,7 +136,9 @@ main(int argc, char *argv[]) {
     }
 
     // de-allocate memory
-    free(u);
+    free(u_h);
+    free(u_old_h);
+    free(f_h);
 
     return(0);
 }

@@ -18,6 +18,9 @@ CFLAGS	= $(OPT) $(ISA) $(PARA) $(XOPT)
 CUDA_PATH ?= /appl/cuda/11.5.1
 INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/common/inc
 
+module load cuda/11.5.1
+module load gcc/10.3.0-binutils-2.36.1
+
 all: $(TARGET)
 
 $(TARGET): $(OBJS) 
