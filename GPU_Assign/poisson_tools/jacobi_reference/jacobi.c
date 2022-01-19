@@ -10,7 +10,7 @@ void update(int N, double ***f, double ***u, double ***u_old);
 
 // reference version from assignment 2
 // threshold has been removed as well as norm calculations
-void jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double threshold) {
+int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double threshold) {
     
 	int n = N+2;
     double ***temp_uold;
@@ -24,8 +24,6 @@ void jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double 
         u = temp_uold;
     }
     return k_max;
-
-    
 }
 
 
