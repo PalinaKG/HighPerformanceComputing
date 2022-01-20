@@ -26,6 +26,10 @@ void matmult_gpu4(int m, int n, int k, double *A, double *B, double *C);
 }
 
 extern "C" {
+void matmult_gpu5(int m, int n, int k, double *A, double *B, double *C);
+}
+
+extern "C" {
 void matmult_lib(int m, int n, int k, double *A, double *B, double *C);
 }
 
@@ -45,5 +49,7 @@ __global__ void gpu2_kernel(int m,int n,int k, double *d_A, double *d_B, double 
 __global__ void gpu3_kernel(int m,int n,int k, double *d_A, double *d_B, double *d_C);
 
 __global__ void gpu4_kernel(int m,int n,int k, double *d_A, double *d_B, double *d_C, int elements);
+
+__global__ void gpu5_kernel(int m,int n,int k, double *d_A, double *d_B, double *d_C);
 
 #endif
