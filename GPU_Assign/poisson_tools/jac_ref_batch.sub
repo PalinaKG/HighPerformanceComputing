@@ -1,0 +1,67 @@
+
+
+#!/bin/bash
+# 02614 - High-Performance Computing, January 2022
+# 
+# batch script to run matmult on a decidated server in the hpcintro
+# queue
+#
+# Author: Bernd Dammann <bd@cc.dtu.dk>
+#
+#BSUB -J jac_ref_batch
+#BSUB -o jac_ref_batch%J.out
+#BSUB -q hpcintrogpu
+#BSUB -n 1
+#BSUB -R "rusage[mem=2048]"
+#BSUB -W 30
+#BSUB -R "span[hosts=1]"
+
+#BSUB -gpu "num=1:mode=exclusive_process"
+
+# uncomment the following line, if you want to assure that your job has
+# a whole CPU for itself (shared L3 cache)
+# #BSUB -R "span[hosts=1] affinity[socket(1)]"
+
+module load cuda/11.5.1
+module load gcc/10.3.0-binutils-2.36.1
+
+# define the driver name to use
+# valid values: matmult_c.studio, matmult_f.studio, matmult_c.gcc or
+# matmult_f.gcc
+#
+EXECUTABLE=jacobi
+
+## grid sizes
+SIZES="5 10 15 20 25 30 35 40"
+
+#max number of iterations
+ITER="1000"
+
+#tolerance
+TOL="0.01"
+
+#start T
+TSTART="10"
+
+#output type
+OTYPE="4"
+
+#function to run
+# 0 for reference type
+FUNCTYPE="0"
+
+# enable(1)/disable(0) result checking
+export MATMULT_COMPARE=0
+
+
+# start the collect command with the above settings
+lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)|cache'
+
+make clean
+make OPT="-g -Ofast -funsafe-loop-optimizations"
+FILE_NAME="jacobi_ref.dat"
+rm  Data/Jacobi_ref/$FILE_NAME
+for S in $SIZES
+do
+	./$EXECUTABLE $S $ITER $TOL $TSTART $OTYPE $FUNCTYPE  | grep -v CPU >> Data/Jacobi_ref/$FILE_NAME
+done

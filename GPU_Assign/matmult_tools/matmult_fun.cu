@@ -14,14 +14,12 @@ extern "C" {
 extern "C" {
 void matmult_gpu1(int m, int n, int k, double *A, double *B, double *C) {
 	double *d_A, *d_B, *d_C;
-
     /*
     printf("A\n");
     mat_print(m,k,A);
     printf("B\n");
     mat_print(k,n,B);
     */
-	
 	// set memory on GPU device
 	cudaMalloc((void **)&d_C, m * n * sizeof(double));
 	cudaMalloc((void **)&d_B, k * n * sizeof(double));
@@ -31,9 +29,7 @@ void matmult_gpu1(int m, int n, int k, double *A, double *B, double *C) {
 	cudaMemcpy(d_C,C, m * n * sizeof(double), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_B,B, k * n * sizeof(double), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_A,A, m * k * sizeof(double), cudaMemcpyHostToDevice);
-    
 	
-
 	// execute kernel 
 	gpu1_kernel<<<1,1>>>(m,n,k,d_A,d_B,d_C);
 	cudaDeviceSynchronize();
@@ -41,12 +37,10 @@ void matmult_gpu1(int m, int n, int k, double *A, double *B, double *C) {
 	// transfer results from GPU device
 	cudaMemcpy(C, d_C, m * n * sizeof(double), cudaMemcpyDeviceToHost);
 
-
 	// clean up data on device
 	cudaFree(d_C);
 	cudaFree(d_B);
 	cudaFree(d_A);
-
 	}
 }
 
@@ -220,10 +214,10 @@ extern "C" {
 void matmult_gpu4(int m, int n, int k, double *A, double *B, double *C) {
 	double *d_A, *d_B, *d_C;
 
-    printf("A\n");
-    mat_print(m,k,A);
-    printf("B\n");
-    mat_print(k,n,B);
+    //printf("A\n");
+   // mat_print(m,k,A);
+  //  printf("B\n");
+//    mat_print(k,n,B);
 	
 	// set memory on GPU device
 	cudaMalloc((void **)&d_C, m * n * sizeof(double));
@@ -256,7 +250,7 @@ void matmult_gpu4(int m, int n, int k, double *A, double *B, double *C) {
 	// transfer results from GPU device
 	cudaMemcpy(C, d_C, m * n * sizeof(double), cudaMemcpyDeviceToHost);
 
-	mat_print(m,n,C);
+//	mat_print(m,n,C);
 	// clean up data on device
 	cudaFree(d_C);
 	cudaFree(d_B);

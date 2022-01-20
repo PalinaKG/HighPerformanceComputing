@@ -1,0 +1,48 @@
+#!/bin/bash
+# 02614 - High-Performance Computing, January 2022
+# 
+# batch script to run matmult on a decidated server in the hpcintro
+# queue
+#
+# Author: Bernd Dammann <bd@cc.dtu.dk>
+#
+#BSUB -J mm_gpu2_4
+#BSUB -o mm_gpu2_4_%J.out
+#BSUB -q hpcintrogpu
+#BSUB -n 1
+#BSUB -R "rusage[mem=2048]"
+#BSUB -W 30
+#BSUB -R "rusage[mem=5GB]"
+#BSUB -gpu "num=1:mode=exclusive_process"
+
+EXECUTABLE=matmult_f.nvcc
+
+# define the mkn values in the MKN variable
+#
+SIZES="12 24 36 48 75 102 124 200 250 360 480 730 800 1000 1200 1500 2000 3000 4000 6000 7000 8000"
+
+# define the permutation type in PERM
+#
+PERM="gpu2 gpu3 gpu4"
+
+
+# enable(1)/disable(0) result checking
+export MATMULT_COMPARE=1
+
+# start the collect command with the above settings
+nvidia-smi
+
+
+module load cuda/11.5.1
+module load gcc/10.3.0-binutils-2.36.1
+make clean
+make
+
+for P in $PERM
+do
+	rm Data/$P".dat"
+	for S in $SIZES
+	do
+		./$EXECUTABLE $P $S $S $S | grep -v CPU >> Data/$P".dat"
+	done
+done
