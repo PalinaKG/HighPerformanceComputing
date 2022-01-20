@@ -1,7 +1,7 @@
-TARGET= example3d
-OBJS	= alloc3d.o alloc3d_gpu.o transfer3d_gpu.o example3d.o
+TARGET= jacobi
+OBJS	= main.o jacobi.o alloc3d.o alloc3d_gpu.o transfer3d_gpu.o print.o
 
-OPT	= -g -O3
+OPT	= -g -Ofast -funsafe-loop-optimizations
 ISA	= 
 PARA	= -fopenmp
 
@@ -29,3 +29,10 @@ $(TARGET): $(OBJS)
 
 clean:
 	@/bin/rm -f *.o $(TARGET)
+
+# DO NOT DELETE
+
+main.o: main.cu jacobi.h alloc3d.h alloc3d_gpu.h transfer3d_gpu.h print.h
+alloc3d.o : alloc3d.h
+alloc3d_gpu.o : alloc3d_gpu.h 
+print.o: print.h

@@ -89,11 +89,15 @@ main(int argc, char *argv[]) {
     #endif
     end_t = mytimer();
     // 8 floating point operations in the jakobi update
+<<<<<<< HEAD
+    double flops = 8.0 * (double)(N+2) * (double)(N+2) * (double)(N+2) * (double)iter; //flops
+=======
     double flops = 8 * (N+2) * (N+2) * (N+2) * (double)iter / 1e6;
+>>>>>>> e5ffc68bd02e2e83e9d30b32a80682193e997864
 
 
     //total time
-    total_time = delta_t(start_t, end_t) / 1000;
+    total_time = delta_t(start_t, end_t) / 1000; //s
 
     //flops per second
     //double flopSec = flops/total_time;
@@ -103,7 +107,7 @@ main(int argc, char *argv[]) {
     printf("%8.3f ", total_time); //total time in sec
     printf("%d ", N); //grid size
     printf("%d ", iter); //number of iterations in jacobi
-    printf("%.3f\n", flops/total_time); //flops/s
+    printf("%8.3f\n", flops/(10e6 * total_time)); //Mflops/s
     // dump  results if wanted 
     switch(output_type) {
 	case 0:
