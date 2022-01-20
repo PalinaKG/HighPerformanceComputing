@@ -247,7 +247,7 @@ void matmult_gpu4(int m, int n, int k, double *A, double *B, double *C) {
 	int dim_m = ceil(m/block_size);
 	int dim_n = ceil(n/block_size);
 	
-	dim3 dimGrid(dim_m, dim_n, 1);
+	dim3 dimGrid(dim_n, dim_m, 1);
 	dim3 dimBlock((int)block_size, (int)block_size, 1);
 	gpu4_kernel<<<dimGrid, dimBlock>>>(m,n,k,d_A,d_B,d_C,nr_of_elem);
 	//gpu4_kernel<<<1,1>>>(m,n,k,d_A,d_B,d_C,nr_of_elem);
@@ -322,12 +322,12 @@ void matmult_gpu5(int m, int n, int k, double *A, double *B, double *C) {
 	// <NUM_BLOCKS, THREADS PER BLOCK>
 	//Number of blocks for each dimensions
 
-	double block_size = 8.0;
+	double block_size = 2.0;
 
 	int dim_m = ceil(m/block_size);
 	int dim_n = ceil(n/block_size);
 	
-	dim3 dimGrid(dim_m, dim_n, 1);
+	dim3 dimGrid(dim_n, dim_m, 1);
 	dim3 dimBlock((int)block_size, (int)block_size, 1);
 	gpu5_kernel<<<dimGrid, dimBlock>>>(m,n,k,d_A,d_B,d_C);
 	//gpu4_kernel<<<1,1>>>(m,n,k,d_A,d_B,d_C,nr_of_elem);
@@ -352,7 +352,7 @@ __global__ void gpu5_kernel(int m,int n,int k, double *d_A, double *d_B, double 
 	int blockRow = blockIdx.y;
 	int blockCol = blockIdx.x;
 
-	const int BLOCK_SIZE = 8;	
+	const int BLOCK_SIZE = 2;	
 
 	int threadRow = threadIdx.y;
 	int threadCol = threadIdx.x;
@@ -369,8 +369,10 @@ __global__ void gpu5_kernel(int m,int n,int k, double *d_A, double *d_B, double 
 	
 	//More threads are initialized than needed
 if ((BLOCK_SIZE*blockRow+threadCol) < m  &&  (BLOCK_SIZE*blockCol+threadRow) < n)
+//if ((BLOCK_SIZE*blockCol+threadCol) < m)
+
 {
-	for (l = 0; l < gridDim.x; l++)
+	for (l = 0; l < gridDim.x; ++l)
 	{
 		double *Asub;
 		Asub = &d_A[blockRow*k*BLOCK_SIZE + l*BLOCK_SIZE];
@@ -384,23 +386,11 @@ if ((BLOCK_SIZE*blockRow+threadCol) < m  &&  (BLOCK_SIZE*blockCol+threadRow) < n
 
 		__syncthreads();
 
-	for (int i = 0; i < BLOCK_SIZE; i++)
-    	{
-        	for (int j=0; j < BLOCK_SIZE; j++)
-        	{
-            	printf("%.2f     ", As[i][j]);
-        	}
-        	printf("\n");
-    	}
-	printf("\n\n");
-
-
-
 
 		for (j = 0; j < BLOCK_SIZE; j++)
 		{
 			sum += As[threadCol][j] * Bs[j][threadRow];
-			printf("COL: %d   ROW: %d    A: %.2f  B: %.2f   SUM: %.2f  j: %d    \n ", threadCol, threadRow, As[threadCol][j], Bs[j][threadRow], sum, j);
+			printf("THREADCOL%d   THREADROW: %d  BLOCKCOL%d   BLOCKROW: %d   A: %.2f  B: %.2f   SUM: %.2f  j: %d    \n ", threadCol, threadRow, blockCol, threadCol, As[threadCol][j], Bs[j][threadRow], sum, j);
 		}
 
 		__syncthreads();
