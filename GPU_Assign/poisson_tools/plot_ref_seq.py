@@ -35,7 +35,7 @@ plt.figure(1)
 plt.plot(N_ref,flops_ref,'*-')
 plt.plot(N_seq,flops_seq,'*-')
 plt.title("")
-plt.xlabel("N")
+plt.xlabel("N, grid size")
 plt.ylabel("Performance [Mflops/s]")
 plt.legend(["Reference", "Sequential, GPU"]) 
     

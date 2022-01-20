@@ -12,8 +12,12 @@ void update(int N, double ***f, double ***u, double ***u_old);
 void jacobi(double ***f_h, double ***u_h, double ***u_old_h, int N, int k_max);
 void jacobi_seq(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max);
 void jacobi_naive(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max);
+void jacobi_multi(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max);
 __global__ void kernel_seq(int N, double ***f, double ***u, double ***u_old);
 __global__ void kernel_naive(int N, double ***f, double ***u, double ***u_old);
+__global__ void kernel_gpu0(int N, double ***f, double ***u, double ***u_old, double ***u_old_d1, int boundary);
+__global__ void kernel_gpu1(int N, double ***f, double ***u, double ***u_old, double ***u_old_d0, int boundary);
+
 
 
 //****************PART 0 - REFERENCE COMPARISON VERSION*******************
@@ -221,7 +225,180 @@ __global__ void kernel_naive(int N, double ***f, double ***u, double ***u_old)
 
 //****************PART 2 - END OF  Naive GPU version – one thread per element  *******************
 
+
+
 //****************PART 3 - START OF  Multi-GPU version  *******************
+void jacobi_multi(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max){
+    
+
+    //declare u, u_old and f for GPU side
+    double 	***u_d0 = NULL;
+    double  ***u_old_d0 = NULL;
+    double  ***f_d0 = NULL;
+    double 	***u_d1 = NULL;
+    double  ***u_old_d1 = NULL;
+    double  ***f_d1 = NULL;
+
+    int half = (N + 2) / 2;
+    int nElems = (N + 2) * (N + 2) * (N + 2);
+
+    cudaSetDevice(0);
+    cudaDeviceEnablePeerAccess(1, 0); // (dev 1, future flag)
+    // Allocate 3x 3d array in device0 memory. (GPU side)
+    if ( (u_d0 = d_malloc_3d_gpu(half, N + 2, N + 2)) == NULL ) {
+        perror("array u_d0: allocation on gpu failed");
+        exit(-1);
+    }
+
+    if ( (u_old_d0 = d_malloc_3d_gpu(half, N + 2, N + 2)) == NULL ) {
+        perror("array u_d0: allocation on gpu failed");
+        exit(-1);
+    }
+
+    if ( (f_d0 = d_malloc_3d_gpu(half, N + 2, N + 2)) == NULL ) {
+        perror("array u_d0: allocation on gpu failed");
+        exit(-1);
+    }
+
+    // do a CPU → GPU transfer of u and f for the initialized data
+    transfer_3d_from_1d(u_d0, u_h[0][0], half, N + 2, N + 2, cudaMemcpyHostToDevice);
+    transfer_3d_from_1d(f_d0, f_h[0][0], half, N + 2, N + 2, cudaMemcpyHostToDevice);
+    transfer_3d_from_1d(u_old_d0, u_h[0][0], half, N + 2, N + 2, cudaMemcpyHostToDevice);
+
+
+    cudaSetDevice(1);
+    cudaDeviceEnablePeerAccess(0, 0); // (dev 0, future flag)
+
+    // Allocate 3x 3d array in device1 memory. (GPU side)
+    if ( (u_d1 = d_malloc_3d_gpu(half, N + 2, N + 2)) == NULL ) {
+        perror("array u_d0: allocation on gpu failed");
+        exit(-1);
+    }
+
+        // Allocate 3x 3d array in device memory. (GPU side)
+    if ( (u_old_d1 = d_malloc_3d_gpu(half, N + 2, N + 2)) == NULL ) {
+        perror("array u_d0: allocation on gpu failed");
+        exit(-1);
+    }
+
+        // Allocate 3x 3d array in device memory. (GPU side)
+    if ( (f_d1 = d_malloc_3d_gpu(half, N + 2, N + 2)) == NULL ) {
+        perror("array u_d0: allocation on gpu failed");
+        exit(-1);
+    }
+
+    // do a CPU → GPU transfer of u and f for the initialized data
+    transfer_3d_from_1d(u_d0, u_h[0][0] + nElems/2 , half, N + 2, N + 2, cudaMemcpyHostToDevice);
+    transfer_3d_from_1d(f_d0, f_h[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyHostToDevice);
+    transfer_3d_from_1d(u_old_d0, u_h[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyHostToDevice);
+
+    // Total number of threads 2048
+    //Number of threads per block 1024
+    double ***temp_uold0;
+    double ***temp_uold1;
+    // Launch your Jacobi iteration kernel inside a CPU controlled iteration loop to get
+    // global synchronization between each iteration step
+    double dimtemp = ceil((double)N/8);
+    dim3 num_blocks = dim3(dimtemp,dimtemp,ceil((double)half/8));
+    dim3 threads_per_block = dim3(8,8,8);
+    
+    for (int i = 0; i < iter_max; i++) {
+
+        cudaSetDevice(0);
+        cudaDeviceEnablePeerAccess(1, 0); // (dev 1, future flag)
+        temp_uold0 = u_old_d0;
+        u_old_d0=u_d0;
+        u_d0 = temp_uold0;
+        kernel_gpu0<<<num_blocks,threads_per_block>>>(N, f_d0, u_d0, u_old_d0, u_old_d1, floor((N+1)/2));
+
+        checkCudaErrors(cudaDeviceSynchronize());
+
+        cudaSetDevice(1);
+        cudaDeviceEnablePeerAccess(0, 0); // (dev 0, future flag)
+        temp_uold1 = u_old_d1;
+        u_old_d1=u_d1;
+        u_d1= temp_uold1;
+        kernel_gpu1<<<num_blocks,threads_per_block>>>(N, f_d1, u_d1, u_old_d1, u_old_d0, floor((N+1)/2));
+        
+        checkCudaErrors(cudaDeviceSynchronize());
+    }
+
+    // When all iterations are done, transfer the result from GPU → CPU
+    cudaSetDevice(0);
+    cudaDeviceEnablePeerAccess(1, 0); // (dev 1, future flag)
+    transfer_3d_from_1d(u_h, u_d0[0][0], half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d_from_1d(f_h, f_d0[0][0], half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d_from_1d(u_old_h, u_old_d0[0][0], half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+
+    cudaSetDevice(1);
+    cudaDeviceEnablePeerAccess(0, 0); // (dev 1, future flag)
+    transfer_3d_from_1d(u_h, u_d1[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d_from_1d(f_h, f_d1[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d_from_1d(u_old_h, u_old_d1[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+
+    free_gpu(u_d0);
+    free_gpu(u_old_d0);
+    free_gpu(f_d0);
+
+    free_gpu(u_d1);
+    free_gpu(u_old_d1);
+    free_gpu(f_d1);
+}
+
+__global__ void kernel_gpu0(int N, double ***f, double ***u, double ***u_old, double ***u_old_d1, int boundary)
+{
+    double delta = (1.0/(double)N)*(1.0/(double)N);
+    int i,j,k;
+    double s = 1.0/6.0;  
+     
+    i = blockIdx.x * blockDim.x + threadIdx.x;
+    j = blockIdx.y * blockDim.y + threadIdx.y;
+    k = blockIdx.z * blockDim.z + threadIdx.z;
+
+    if(i>0 && j>0 && k>0 && j<(N+1) && k<(N+1) && i < ((N+2)/2)){
+        u[i][j][k]= u_old[i-1][j][k] + u_old[i][j-1][k] \
+        + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] \
+        + delta*f[i][j][k]; 
+
+        if(i == (N/2)){
+            u[i][j][k] += u_old_d1[0][j][k];
+        }
+        else{
+            u[i][j][k] += u_old[i+1][j][k];
+        }
+
+        u[i][j][k] = s * u[i][j][k];
+    }     
+    
+}
+
+__global__ void kernel_gpu1(int N, double ***f, double ***u, double ***u_old, double ***u_old_d0, int boundary)
+{
+    double delta = (1.0/(double)N)*(1.0/(double)N);
+    int i,j,k;
+    double s = 1.0/6.0;  
+     
+    i = blockIdx.x * blockDim.x + threadIdx.x;
+    j = blockIdx.y * blockDim.y + threadIdx.y;
+    k = blockIdx.z * blockDim.z + threadIdx.z;
+
+
+    if(i>= 0 && j>0 && k>0 && j<(N+1) && k<(N+1) && i < ((N+2)/2)-1){
+        u[i][j][k]= u_old[i+1][j][k] + u_old[i][j-1][k] \
+        + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] \
+        + delta*f[i][j][k]; 
+
+        if(i == 0){
+            u[i][j][k] += u_old_d0[(N/2)][j][k];
+        }
+        else{
+            u[i][j][k] += u_old[i-1][j][k];
+        }
+
+        u[i][j][k] = s * u[i][j][k];
+    } 
+}   
+    
 //****************PART 3 - END OF  Multi-GPU version  *******************
 
 //****************PART 4 - START OF  naive + stop version  *******************
