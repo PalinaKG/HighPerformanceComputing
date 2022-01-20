@@ -24,7 +24,7 @@ void jacobi(double ***f, double ***u, double ***u_old, int N, int k_max) {
 
     memcpy(&u_old[0][0][0],&u[0][0][0],n*n*n*sizeof(&u[0][0][0]));
     
-    for (int i = 0; i < k_max; i++) {
+    for (int counter = 0; counter < k_max; counter++) {
         update(N, f, u, u_old);
         temp_uold = u_old;
         u_old=u;
@@ -94,7 +94,8 @@ void jacobi_seq(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter
     double ***temp_uold;
     // Launch your Jacobi iteration kernel inside a CPU controlled iteration loop to get
     // global synchronization between each iteration step
-    for (int i = 0; i < iter_max; i++) {
+   
+    for (int counter = 0; counter < iter_max; counter++) {
         temp_uold = u_old_d;
         u_old_d=u_d;
         u_d = temp_uold;

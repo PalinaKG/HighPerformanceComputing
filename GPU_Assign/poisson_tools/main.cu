@@ -77,7 +77,7 @@ main(int argc, char *argv[]) {
 
 
     //the iterations are static and we're always returning the iter_max value
-    jacobi(f_h, u_h, u_old_h, N, iter_max);
+    jacobi_seq(f_h, u_h, u_old_h, N, iter_max);
     iter = iter_max;
 
     end_t = omp_get_wtime();
