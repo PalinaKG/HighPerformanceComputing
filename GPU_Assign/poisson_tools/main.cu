@@ -36,6 +36,7 @@ main(int argc, char *argv[]) {
     int iter = 10;
     double start_t, end_t;
     double total_time;
+    int func_type = 1;
 
     const long nElms = N * N * N; // Number of elements.
 
@@ -47,6 +48,9 @@ main(int argc, char *argv[]) {
     start_T   = atof(argv[4]);  // start T for all inner grid points
     if (argc == 6) {
 	output_type = atoi(argv[5]);  // ouput type
+    }
+    if(argc == 7){
+        func_type = atoi(argv[6]); //function type
     }
 
     // Allocate 3x 3d array in host memory.
@@ -77,7 +81,12 @@ main(int argc, char *argv[]) {
 
 
     //the iterations are static and we're always returning the iter_max value
-    jacobi_seq(f_h, u_h, u_old_h, N, iter_max);
+    if(func_type == 0){
+        jacobi(f_h, u_h, u_old_h, N, iter_max);
+    }
+    else if(func_type == 1){
+        jacobi_seq(f_h, u_h, u_old_h, N, iter_max);
+    }
     iter = iter_max;
 
     end_t = omp_get_wtime();

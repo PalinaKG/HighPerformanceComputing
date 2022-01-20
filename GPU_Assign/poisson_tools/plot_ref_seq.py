@@ -11,36 +11,35 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-data_j = np.loadtxt("Data/Jacobi_ref/jacobi_ref.dat",unpack=True)
-data_gs = np.loadtxt("Data/Jacobi_seq/jacobi_seq.dat",unpack=True)
+data_ref = np.loadtxt("Data/Jacobi_ref/jacobi_ref.dat",unpack=True)
+data_seq = np.loadtxt("Data/Jacobi_seq/jacobi_seq.dat",unpack=True)
 
 
-N_j = data_j[3]
-N_gs = data_gs[3]
+N_ref = data_ref[3]
+N_seq = data_seq[3]
 
 
-flops_j = data_j[5]
-time_j = data_j[2]
-iterations_j = data_j[4]
+flops_ref = data_ref[5]
+time_ref = data_ref[2]
+iterations_ref = data_ref[4]
 
-flops_gs = data_gs[5]
-time_gs = data_gs[2]
-iterations_gs = data_gs[4]
+flops_seq = data_seq[5]
+time_seq = data_seq[2]
+iterations_seq = data_seq[4]
 
 
 
 
 
 plt.figure(1)
-plt.plot(N_j,iterations_j,'*-')
-plt.plot(N_gs,iterations_gs,'*-')
+plt.plot(N_ref,flops_ref,'*-')
+plt.plot(N_seq,flops_seq,'*-')
 plt.title("")
 plt.xlabel("N")
-plt.ylabel("Iterations")
-plt.legend(["Jacobi", "Gauss-Seidel"]) 
-
+plt.ylabel("Performance [Mflops/s]")
+plt.legend(["Reference", "Sequential, GPU"]) 
     
-
+plt.show()
 
 
     
