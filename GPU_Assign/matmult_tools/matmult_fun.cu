@@ -7,8 +7,9 @@ extern "C" {
 	#include <cblas.h>
 	#include <omp.h>
 
-	#define BLOCK_SIZE 11.0;
+	//#define BLOCK_SIZE 11;
 }
+//#define BLOCK_SIZE 11;
 
 extern "C" {
 void matmult_gpu1(int m, int n, int k, double *A, double *B, double *C) {
@@ -292,6 +293,125 @@ __global__ void gpu4_kernel(int m,int n,int k, double *d_A, double *d_B, double 
 }	
 }
 
+
+
+
+
+extern "C" {
+void matmult_gpu5(int m, int n, int k, double *A, double *B, double *C) {
+	double *d_A, *d_B, *d_C;
+
+    printf("A\n");
+    mat_print(m,k,A);
+    printf("B\n");
+    mat_print(k,n,B);
+	
+	// set memory on GPU device
+	cudaMalloc((void **)&d_C, m * n * sizeof(double));
+	cudaMalloc((void **)&d_B, k * n * sizeof(double));
+	cudaMalloc((void **)&d_A, m * k * sizeof(double));
+   
+	// Copy data to device
+	cudaMemcpy(d_C,C, m * n * sizeof(double), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_B,B, k * n * sizeof(double), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_A,A, m * k * sizeof(double), cudaMemcpyHostToDevice);
+    
+	
+
+	// execute kernel 
+	// <NUM_BLOCKS, THREADS PER BLOCK>
+	//Number of blocks for each dimensions
+
+	double block_size = 8.0;
+
+	int dim_m = ceil(m/block_size);
+	int dim_n = ceil(n/block_size);
+	
+	dim3 dimGrid(dim_m, dim_n, 1);
+	dim3 dimBlock((int)block_size, (int)block_size, 1);
+	gpu5_kernel<<<dimGrid, dimBlock>>>(m,n,k,d_A,d_B,d_C);
+	//gpu4_kernel<<<1,1>>>(m,n,k,d_A,d_B,d_C,nr_of_elem);
+	checkCudaErrors(cudaDeviceSynchronize());
+	
+	// transfer results from GPU device
+	cudaMemcpy(C, d_C, m * n * sizeof(double), cudaMemcpyDeviceToHost);
+
+	mat_print(m,n,C);
+	// clean up data on device
+	cudaFree(d_C);
+	cudaFree(d_B);
+	cudaFree(d_A);
+
+	}
+}
+
+__global__ void gpu5_kernel(int m,int n,int k, double *d_A, double *d_B, double *d_C){
+	
+	int j,l;
+	double sum=0.0;
+	int blockRow = blockIdx.y;
+	int blockCol = blockIdx.x;
+
+	const int BLOCK_SIZE = 8;	
+
+	int threadRow = threadIdx.y;
+	int threadCol = threadIdx.x;
+
+	
+	double *Csub;
+	Csub = &d_C[blockRow*n*BLOCK_SIZE + BLOCK_SIZE*blockCol];
+	int endLoop;	
+	if (n < BLOCK_SIZE)
+	{
+		endLoop = n;
+	}
+	else {endLoop = n/BLOCK_SIZE;}
+	
+	//More threads are initialized than needed
+if ((BLOCK_SIZE*blockRow+threadCol) < m  &&  (BLOCK_SIZE*blockCol+threadRow) < n)
+{
+	for (l = 0; l < gridDim.x; l++)
+	{
+		double *Asub;
+		Asub = &d_A[blockRow*k*BLOCK_SIZE + l*BLOCK_SIZE];
+		double *Bsub;
+		Bsub = &d_B[l*n*BLOCK_SIZE + blockCol*BLOCK_SIZE];		
+		
+		__shared__ float As[BLOCK_SIZE][BLOCK_SIZE];
+		__shared__ float Bs[BLOCK_SIZE][BLOCK_SIZE];
+		As[threadCol][threadRow] = Asub[threadCol*k + threadRow];
+		Bs[threadCol][threadRow] = Bsub[threadCol*n + threadRow];
+
+		__syncthreads();
+
+	for (int i = 0; i < BLOCK_SIZE; i++)
+    	{
+        	for (int j=0; j < BLOCK_SIZE; j++)
+        	{
+            	printf("%.2f     ", As[i][j]);
+        	}
+        	printf("\n");
+    	}
+	printf("\n\n");
+
+
+
+
+		for (j = 0; j < BLOCK_SIZE; j++)
+		{
+			sum += As[threadCol][j] * Bs[j][threadRow];
+			printf("COL: %d   ROW: %d    A: %.2f  B: %.2f   SUM: %.2f  j: %d    \n ", threadCol, threadRow, As[threadCol][j], Bs[j][threadRow], sum, j);
+		}
+
+		__syncthreads();
+		
+	}
+
+	Csub[threadCol*n + threadRow] = sum;
+}	
+}
+
+
 extern "C" {
 void matmult_lib(int m, int n, int k, double *A, double *B, double *C) {
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k, 1.0, A, k, B, n, 0.0, C, n);
@@ -316,8 +436,8 @@ void matmult_gpulib(int m, int n, int k, double *A, double *B, double *C) {
     cudaMemcpy(d_A,A, m * k * sizeof(double), cudaMemcpyHostToDevice);
 	cublasHandle_t handle;
 	cublasCreate(&handle);
-	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, m, n, k, &alpha, d_A, k, d_B, n, &beta, d_C, n);
-
+	//cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, m, n, k, &alpha, d_A, k, d_B, n, &beta, d_C, n);
+	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n, m, k, &alpha, d_B, n, d_A, k, &beta, d_C, n);
 	cublasDestroy(handle);
     cudaMemcpy(C, d_C, m*n* sizeof(double), cudaMemcpyDeviceToHost);
     cudaFree(d_A);
