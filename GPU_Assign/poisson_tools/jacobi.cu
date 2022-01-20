@@ -403,14 +403,17 @@ __global__ void kernel_gpu1(int N, double ***f, double ***u, double ***u_old, do
 
 //****************PART 4 - START OF  naive + stop version  *******************
 
-void jacobi_naive_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max){
+void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max, double threshold){
     
 
     //declare u, u_old and f for GPU side
     double 	***u_d = NULL;
     double  ***u_old_d = NULL;
     double  ***f_d = NULL;
-
+	double d;
+	int counter=0;
+	
+	d = 1.0/0.0;
     // Allocate 3x 3d array in device memory. (GPU side)
     if ( (u_d = d_malloc_3d_gpu(N + 2, N + 2, N + 2)) == NULL ) {
         perror("array u_d0: allocation on gpu failed");
@@ -428,7 +431,7 @@ void jacobi_naive_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, i
         perror("array u_d0: allocation on gpu failed");
         exit(-1);
     }
-
+		
     // do a CPU → GPU transfer of u and f for the initialized data
     transfer_3d(u_d, u_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
     transfer_3d(f_d, f_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
@@ -441,14 +444,20 @@ void jacobi_naive_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, i
     double dimtemp = ceil((double)N/8);
     dim3 num_blocks = dim3(dimtemp,dimtemp,dimtemp);
     dim3 threads_per_block = dim3(8,8,8);
-    
-    for (int i = 0; i < iter_max; i++) {
+	
+	while (d > threshold && counter < iter_max) 
+    {
         temp_uold = u_old_d;
         u_old_d=u_d;
         u_d = temp_uold;
-        kernel_naive_stop<<<num_blocks,threads_per_block>>>(N, f_d, u_d, u_old_d);
+        kernel_stop<<<num_blocks,threads_per_block>>>(N, f_d, u_d, u_old_d);
         cudaDeviceSynchronize();
-    }
+    	kernel_forbenius<<<1,1>>>(u_d,u_old_d,N,d);
+		cudaDeviceSynchronize();
+		
+		//cudaMemcpy(d,d_d,1)	
+		counter = counter + 1;
+	}
 
     // When all iterations are done, transfer the result from GPU → CPU
     transfer_3d(u_h, u_d, N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
@@ -460,7 +469,7 @@ void jacobi_naive_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, i
     free_gpu(f_d);
 }
 
-__global__ void kernel_naive_stop(int N, double ***f, double ***u, double ***u_old)
+__global__ void kernel_stop(int N, double ***f, double ***u, double ***u_old)
 {
     double delta = (1.0/(double)N)*(1.0/(double)N);
     int i,j,k;
@@ -477,7 +486,24 @@ __global__ void kernel_naive_stop(int N, double ***f, double ***u, double ***u_o
     }
 
         
-    
+}
+__global__ void kernel_forbenius(double ***u_d, double ***u_old, int N, double &d_d){
+	double sum = 0.0;
+	double value = 0.0;
+	
+	for (int i = 0; i < (N+2); i++)
+	{
+		for (int j=0; j < (N+2); j++)
+		{
+			for (int k=0; k < (N+2); k++)
+			{
+				value = u_d[i][j][k] - u_old[i][j][k];
+				sum += (value * value);
+			}
+		}
+	}
+	d_d = sqrt(sum);
+
 }
 
 //****************PART 4 - END OF  naive + stop version  *******************
