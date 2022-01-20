@@ -93,6 +93,9 @@ main(int argc, char *argv[]) {
     else if(func_type == 3){
         jacobi_multi(f_h, u_h, u_old_h, N, iter_max);
     }
+    else if(func_type == 4){
+        jacobi_stop(f_h, u_h, u_old_h, N, iter_max,tolerance);
+    }
     iter = iter_max;
 
     end_t = omp_get_wtime();
