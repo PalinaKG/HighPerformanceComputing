@@ -24,8 +24,6 @@ int jacobi(double ***f, double ***u, double ***u_old, int N, int k_max, double t
         u = temp_uold;
     }
     return k_max;
-
-    
 }
 
 
