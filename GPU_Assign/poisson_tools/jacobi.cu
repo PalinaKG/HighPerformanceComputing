@@ -89,7 +89,7 @@ void jacobi_seq(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter
     // do a CPU → GPU transfer of u and f for the initialized data
     transfer_3d(u_d, u_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
     transfer_3d(f_d, f_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
-    transfer_3d(u_old_d, u_old_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
+    transfer_3d(u_old_d, u_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
 
     double ***temp_uold;
     // Launch your Jacobi iteration kernel inside a CPU controlled iteration loop to get
