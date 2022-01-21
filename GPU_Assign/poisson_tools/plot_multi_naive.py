@@ -12,17 +12,23 @@ import matplotlib.pyplot as plt
 
 
 #data_ref = np.loadtxt("Data/Jacobi_naive/jacobi_naive.dat",unpack=True)
+data_multi = np.loadtxt("Data/Jacobi_multi/jacobi_multi.dat",unpack=True)
+data_ref = np.loadtxt("Data/Jacobi_ref/jacobi_ref3.dat",unpack=True)
 data_naive = np.loadtxt("Data/Jacobi_naive/jacobi_naive.dat",unpack=True)
-data_ref = np.loadtxt("Data/Jacobi_ref/jacobi_ref2.dat",unpack=True)
 
 
 N_ref = data_ref[3]
+N_multi = data_multi[3]
 N_naive = data_naive[3]
 
 
 flops_ref = data_ref[5]
 time_ref = data_ref[2]
 iterations_ref = data_ref[4]
+
+flops_multi = data_multi[5]
+time_multi = data_multi[2]
+iterations_multi = data_multi[4]
 
 flops_naive = data_naive[5]
 time_naive = data_naive[2]
@@ -38,13 +44,14 @@ iterations_ref = data_ref[4]
 
 plt.figure(1)
 #plt.plot(N_ref,flops_ref,'*-')
+plt.plot(N_multi,flops_multi/1000,'*-')
 plt.plot(N_naive,flops_naive/1000,'*-')
-plt.plot(N_ref,flops_ref/1000,'*-')
+#plt.plot(N_ref,flops_ref/1000,'*-')
 plt.title("")
 plt.xlabel("N, grid size")
 plt.ylabel("Performance [Gflops/s]")
 #plt.ylim(0,50)
-plt.legend(["Naive, GPU", "Reference, 12 thread"]) 
+plt.legend(["Multi-GPU", "Naive, GPU"]) 
     
 plt.show()
 
