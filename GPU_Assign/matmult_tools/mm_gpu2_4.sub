@@ -23,7 +23,7 @@ SIZES="12 24 36 48 75 102 124 200 250 360 480 730 800 1000 1200 1500 2000 3000 4
 
 # define the permutation type in PERM
 #
-PERM="gpu2 gpu3 gpu4"
+PERM="gpu2 gpu3 gpu4 gpu5"
 
 
 # enable(1)/disable(0) result checking
