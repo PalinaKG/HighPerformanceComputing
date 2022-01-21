@@ -8,16 +8,25 @@
 #include "transfer3d_gpu.h"
 #include <helper_cuda.h>
 
+
 void update(int N, double ***f, double ***u, double ***u_old);
 void jacobi(double ***f_h, double ***u_h, double ***u_old_h, int N, int k_max);
 void jacobi_seq(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max);
 void jacobi_naive(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max);
 void jacobi_multi(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max);
+void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max, double threshold);
+
+
 __global__ void kernel_seq(int N, double ***f, double ***u, double ***u_old);
 __global__ void kernel_naive(int N, double ***f, double ***u, double ***u_old);
 __global__ void kernel_gpu0(int N, double ***f, double ***u, double ***u_old, double ***u_old_d1, int boundary);
 __global__ void kernel_gpu1(int N, double ***f, double ***u, double ***u_old, double ***u_old_d0, int boundary);
 
+__global__ void kernel_stop(int N, double ***f, double ***u, double ***u_old, double *d);
+
+__inline__ __device__ double SumReduce(double val);
+
+__inline__ __device__ double WarpReduction(double value);
 
 
 //****************PART 0 - REFERENCE COMPARISON VERSION*******************
@@ -405,16 +414,17 @@ __global__ void kernel_gpu1(int N, double ***f, double ***u, double ***u_old, do
 
 void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int iter_max, double threshold){
     
-
     //declare u, u_old and f for GPU side
     double 	***u_d = NULL;
     double  ***u_old_d = NULL;
     double  ***f_d = NULL;
-	double d;
+	double *d;
+	double myvar = 1.0/0.0;
 	int counter=0;
-	
-	d = 1.0/0.0;
+
+	*d = myvar;
     // Allocate 3x 3d array in device memory. (GPU side)
+	
     if ( (u_d = d_malloc_3d_gpu(N + 2, N + 2, N + 2)) == NULL ) {
         perror("array u_d0: allocation on gpu failed");
         exit(-1);
@@ -444,21 +454,18 @@ void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int ite
     double dimtemp = ceil((double)N/8);
     dim3 num_blocks = dim3(dimtemp,dimtemp,dimtemp);
     dim3 threads_per_block = dim3(8,8,8);
-	
-	while (d > threshold && counter < iter_max) 
+/*
+	while (*d > threshold && counter < iter_max) 
     {
         temp_uold = u_old_d;
         u_old_d=u_d;
         u_d = temp_uold;
-        kernel_stop<<<num_blocks,threads_per_block>>>(N, f_d, u_d, u_old_d);
+        //kernel_stop<<<num_blocks,threads_per_block>>>(N, f_d, u_d, u_old_d,d);
         cudaDeviceSynchronize();
-    	kernel_forbenius<<<1,1>>>(u_d,u_old_d,N,d);
-		cudaDeviceSynchronize();
 		
-		//cudaMemcpy(d,d_d,1)	
 		counter = counter + 1;
 	}
-
+*/
     // When all iterations are done, transfer the result from GPU → CPU
     transfer_3d(u_h, u_d, N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
     transfer_3d(f_h, f_d, N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
@@ -469,41 +476,70 @@ void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int ite
     free_gpu(f_d);
 }
 
-__global__ void kernel_stop(int N, double ***f, double ***u, double ***u_old)
+__global__ void kernel_stop(int N, double ***f, double ***u, double ***u_old, double *d)
 {
     double delta = (1.0/(double)N)*(1.0/(double)N);
     int i,j,k;
     double s = 1.0/6.0;  
-     
+    double sum = 0.0;
+	double value = 0.0;
+	 
     i = blockIdx.x * blockDim.x + threadIdx.x;
     j = blockIdx.y * blockDim.y + threadIdx.y;
     k = blockIdx.z * blockDim.z + threadIdx.z;
 
-    if(i>0 && j>0 && k>0 && j<(N+1) && k<(N+1) && i<(N+1)){
-    u[i][j][k]= s*(u_old[i-1][j][k] + u_old[i+1][j][k] + u_old[i][j-1][k] \
-    + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] \
-    + delta*f[i][j][k]); 
-    }
+    if(i>0 && j>0 && k>0 && j<(N+1) && k<(N+1) && i<(N+1))
+	{
+    	u[i][j][k]= s*(u_old[i-1][j][k] + u_old[i+1][j][k] + u_old[i][j-1][k] \
+    	+ u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] \
+    	+ delta*f[i][j][k]); 
+ 		
+		value = u[i][j][k] - u_old[i][j][k];
+		sum += (value * value);   
 
+	}
+	//__syncthreads() // kannski!!!
+	sum = SumReduce(sum);
+	if (threadIdx.x == 0)
+	{
+		atomicAdd(d, sum);
+	}
         
 }
-__global__ void kernel_forbenius(double ***u_d, double ***u_old, int N, double &d_d){
-	double sum = 0.0;
-	double value = 0.0;
-	
-	for (int i = 0; i < (N+2); i++)
-	{
-		for (int j=0; j < (N+2); j++)
-		{
-			for (int k=0; k < (N+2); k++)
-			{
-				value = u_d[i][j][k] - u_old[i][j][k];
-				sum += (value * value);
-			}
-		}
-	}
-	d_d = sqrt(sum);
 
+__inline__ __device__ double SumReduce(double val)
+{
+	__shared__ double smem[32];
+
+	if (threadIdx.x < warpSize)
+	{
+		smem[threadIdx.x] = 0;
+	}
+	__syncthreads();
+
+	val = WarpReduction(val);
+
+	if (threadIdx.x % warpSize == 0)
+	{
+		smem[threadIdx.x / warpSize] =val;
+	}
+	__syncthreads();
+	
+	if (threadIdx.x < warpSize)
+	{
+		val = smem[threadIdx.x];
+	}		
+	return WarpReduction(val);
 }
+
+__inline__ __device__ double WarpReduction(double value)
+{
+	for (int i=16; i > 0; i/2)
+	{
+		value += __shfl_down_sync(-1, value, i);
+	}
+	return value;
+}
+
 
 //****************PART 4 - END OF  naive + stop version  *******************
