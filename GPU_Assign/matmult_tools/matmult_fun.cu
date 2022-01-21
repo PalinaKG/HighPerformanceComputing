@@ -236,7 +236,7 @@ void matmult_gpu4(int m, int n, int k, double *A, double *B, double *C) {
 	//Number of blocks for each dimensions
 
 	double block_size = 4.0;
-	int nr_of_elem = 1;
+	int nr_of_elem = 4;
 
 	int dim_m = ceil(m/block_size);
 	int dim_n = ceil(n/block_size);
@@ -312,7 +312,7 @@ void matmult_gpu5(int m, int n, int k, double *A, double *B, double *C) {
 	// <NUM_BLOCKS, THREADS PER BLOCK>
 	//Number of blocks for each dimensions
 
-	double block_size = 2.0;
+	double block_size = 8;
 
 	int dim_m = ceil(m/block_size);
 	int dim_n = ceil(n/block_size);
@@ -341,7 +341,7 @@ __global__ void gpu5_kernel(int m,int n,int k, double *d_A, double *d_B, double 
 	int blockRow = blockIdx.y;
 	int blockCol = blockIdx.x;
 
-	const int BLOCK_SIZE = 2;	
+	const int BLOCK_SIZE = 8;	
 
 	int threadRow = threadIdx.y;
 	int threadCol = threadIdx.x;

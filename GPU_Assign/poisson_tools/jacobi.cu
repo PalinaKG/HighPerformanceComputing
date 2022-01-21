@@ -418,11 +418,12 @@ void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int ite
     double 	***u_d = NULL;
     double  ***u_old_d = NULL;
     double  ***f_d = NULL;
-	double *d;
+	double *d_h;
+	double *d_d;
 	double myvar = 1.0/0.0;
 	int counter=0;
 
-	*d = myvar;
+	d_h = &myvar;
     // Allocate 3x 3d array in device memory. (GPU side)
 	
     if ( (u_d = d_malloc_3d_gpu(N + 2, N + 2, N + 2)) == NULL ) {
@@ -441,7 +442,8 @@ void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int ite
         perror("array u_d0: allocation on gpu failed");
         exit(-1);
     }
-		
+	cudaMalloc(&d_d,sizeof(double));
+	cudaMemset(d_d,0,sizeof(double));	
     // do a CPU → GPU transfer of u and f for the initialized data
     transfer_3d(u_d, u_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
     transfer_3d(f_d, f_h, N + 2, N + 2, N + 2, cudaMemcpyHostToDevice);
@@ -454,18 +456,20 @@ void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int ite
     double dimtemp = ceil((double)N/8);
     dim3 num_blocks = dim3(dimtemp,dimtemp,dimtemp);
     dim3 threads_per_block = dim3(8,8,8);
-/*
-	while (*d > threshold && counter < iter_max) 
+	printf("%.2f\n",*d_h);
+	while ((*d_h > threshold) && (counter < iter_max)) 
     {
         temp_uold = u_old_d;
         u_old_d=u_d;
         u_d = temp_uold;
-        //kernel_stop<<<num_blocks,threads_per_block>>>(N, f_d, u_d, u_old_d,d);
+        kernel_stop<<<num_blocks,threads_per_block>>>(N, f_d, u_d, u_old_d,d_d);
         cudaDeviceSynchronize();
+		cudaMemcpy(d_h,d_d,sizeof(double),cudaMemcpyHostToDevice);
 		
+		printf("%.2f\n",*d_h);
 		counter = counter + 1;
 	}
-*/
+
     // When all iterations are done, transfer the result from GPU → CPU
     transfer_3d(u_h, u_d, N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
     transfer_3d(f_h, f_d, N + 2, N + 2, N + 2, cudaMemcpyDeviceToHost);
@@ -495,20 +499,19 @@ __global__ void kernel_stop(int N, double ***f, double ***u, double ***u_old, do
     	+ delta*f[i][j][k]); 
  		
 		value = u[i][j][k] - u_old[i][j][k];
-		sum += (value * value);   
+		s
+m += (value * value);   
 
 	}
-	//__syncthreads() // kannski!!!
 	sum = SumReduce(sum);
 	if (threadIdx.x == 0)
 	{
 		atomicAdd(d, sum);
 	}
-        
 }
 
 __inline__ __device__ double SumReduce(double val)
-{
+{	
 	__shared__ double smem[32];
 
 	if (threadIdx.x < warpSize)
@@ -518,7 +521,6 @@ __inline__ __device__ double SumReduce(double val)
 	__syncthreads();
 
 	val = WarpReduction(val);
-
 	if (threadIdx.x % warpSize == 0)
 	{
 		smem[threadIdx.x / warpSize] =val;
@@ -534,7 +536,7 @@ __inline__ __device__ double SumReduce(double val)
 
 __inline__ __device__ double WarpReduction(double value)
 {
-	for (int i=16; i > 0; i/2)
+	for (int i=16; i > 0; i/=2)
 	{
 		value += __shfl_down_sync(-1, value, i);
 	}
