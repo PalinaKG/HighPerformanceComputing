@@ -1,5 +1,3 @@
-
-
 #!/bin/bash
 # 02614 - High-Performance Computing, January 2022
 # 
@@ -12,7 +10,7 @@
 #BSUB -o jac_ref_batch%J.out
 #BSUB -q hpcintrogpu
 #BSUB -n 12
-#BSUB -R "rusage[mem=2048]"
+#BSUB -R "rusage[mem=2GB]"
 #BSUB -W 30
 #BSUB -R "span[hosts=1]"
 

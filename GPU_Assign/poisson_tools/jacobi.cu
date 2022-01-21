@@ -496,8 +496,8 @@ __global__ void kernel_stop(int N, double ***f, double ***u, double ***u_old, do
     	+ delta*f[i][j][k]); 
  		
 		value = u[i][j][k] - u_old[i][j][k];
-		s
-m += (value * value);   
+		//s commenta út því þetta var að stoppa runnið hjá mér
+    //m += (value * value);   
 
 	}
 	sum = SumReduce(sum);

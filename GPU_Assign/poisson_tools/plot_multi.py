@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jan 14 08:54:02 2022
+
+@author: palinakroyer
+"""
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+#data_ref = np.loadtxt("Data/Jacobi_naive/jacobi_naive.dat",unpack=True)
+data_multi = np.loadtxt("Data/Jacobi_multi/jacobi_multi.dat",unpack=True)
+data_ref = np.loadtxt("Data/Jacobi_ref/jacobi_ref3.dat",unpack=True)
+
+
+N_ref = data_ref[3]
+N_multi = data_multi[3]
+
+
+flops_ref = data_ref[5]
+time_ref = data_ref[2]
+iterations_ref = data_ref[4]
+
+flops_multi = data_multi[5]
+time_multi = data_multi[2]
+iterations_multi = data_multi[4]
+
+
+N_ref = data_ref[3]
+flops_ref = data_ref[5]
+time_ref = data_ref[2]
+iterations_ref = data_ref[4]
+
+
+
+plt.figure(1)
+#plt.plot(N_ref,flops_ref,'*-')
+plt.plot(N_multi,flops_multi/1000,'*-')
+plt.plot(N_ref,flops_ref/1000,'*-')
+plt.title("")
+plt.xlabel("N, grid size")
+plt.ylabel("Performance [Gflops/s]")
+#plt.ylim(0,50)
+plt.legend(["Multi-GPU", "Reference, 24 thread"]) 
+    
+plt.show()
+
+
+    
+
+
