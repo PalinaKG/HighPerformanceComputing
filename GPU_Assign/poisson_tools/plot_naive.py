@@ -44,7 +44,7 @@ plt.title("")
 plt.xlabel("N, grid size")
 plt.ylabel("Performance [Gflops/s]")
 #plt.ylim(0,50)
-plt.legend(["Naive, GPU", "Reference, 24 thread"]) 
+plt.legend(["Naive, GPU", "Reference, 12 thread"]) 
     
 plt.show()
 

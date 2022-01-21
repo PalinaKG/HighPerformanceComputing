@@ -320,8 +320,6 @@ void jacobi_multi(double ***f_h, double ***u_h, double ***u_old_h, int N, int it
         u_d0 = temp_uold0;
         kernel_gpu0<<<num_blocks,threads_per_block>>>(N, f_d0, u_d0, u_old_d0, u_old_d1, floor((N+1)/2));
 
-        checkCudaErrors(cudaDeviceSynchronize());
-
         cudaSetDevice(1);
         cudaDeviceEnablePeerAccess(0, 0); // (dev 0, future flag)
         temp_uold1 = u_old_d1;
@@ -330,20 +328,19 @@ void jacobi_multi(double ***f_h, double ***u_h, double ***u_old_h, int N, int it
         kernel_gpu1<<<num_blocks,threads_per_block>>>(N, f_d1, u_d1, u_old_d1, u_old_d0, floor((N+1)/2));
         
         checkCudaErrors(cudaDeviceSynchronize());
+        cudaSetDevice(0);
+        checkCudaErrors(cudaDeviceSynchronize());
     }
 
-    // When all iterations are done, transfer the result from GPU → CPU
-    cudaSetDevice(0);
-    cudaDeviceEnablePeerAccess(1, 0); // (dev 1, future flag)
-    transfer_3d_from_1d(u_h, u_d0[0][0], half, N + 2, N + 2, cudaMemcpyDeviceToHost);
-    transfer_3d_from_1d(f_h, f_d0[0][0], half, N + 2, N + 2, cudaMemcpyDeviceToHost);
-    transfer_3d_from_1d(u_old_h, u_old_d0[0][0], half, N + 2, N + 2, cudaMemcpyDeviceToHost);
 
-    cudaSetDevice(1);
-    cudaDeviceEnablePeerAccess(0, 0); // (dev 1, future flag)
-    transfer_3d_from_1d(u_h, u_d1[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
-    transfer_3d_from_1d(f_h, f_d1[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
-    transfer_3d_from_1d(u_old_h, u_old_d1[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    // When all iterations are done, transfer the result from GPU → CPU
+    transfer_3d_to_1d(u_h[0][0], u_d0, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    //transfer_3d_from_1d(f_h, f_d0[0][0], half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d_to_1d(u_old_h[0][0], u_old_d0, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+
+    transfer_3d_to_1d(u_h[0][0] + nElems/2, u_d1, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    //transfer_3d_from_1d(f_h, f_d1[0][0] + nElems/2, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
+    transfer_3d_to_1d(u_old_h[0][0]  + nElems/2, u_old_d1, half, N + 2, N + 2, cudaMemcpyDeviceToHost);
 
     free_gpu(u_d0);
     free_gpu(u_old_d0);

@@ -57,6 +57,14 @@ export MATMULT_COMPARE=0
 # start the collect command with the above settings
 lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)|cache'
 
+# export TMPDIR=$__LSF_JOB_TMPDIR__ 
+ 
+# nv-nsight-cu-cli -o profile_$LSB_JOBID \ 
+#     --section MemoryWorkloadAnalysis \ 
+#     --section MemoryWorkloadAnalysis_Chart \ 
+#     --section ComputeWorkloadAnalysis \ 
+# 	--section SpeedOfLight\
+
 make clean
 make OPT="-g -Ofast -funsafe-loop-optimizations"
 FILE_NAME="jacobi_ref.dat"
