@@ -190,9 +190,9 @@ void jacobi_naive(double ***f_h, double ***u_h, double ***u_old_h, int N, int it
     double ***temp_uold;
     // Launch your Jacobi iteration kernel inside a CPU controlled iteration loop to get
     // global synchronization between each iteration step
-    double dimtemp = ceil((double)N/8);
-    dim3 num_blocks = dim3(dimtemp,dimtemp,dimtemp);
-    dim3 threads_per_block = dim3(8,8,8);
+
+    dim3 num_blocks = dim3(ceil(N/32), ceil(N/8), ceil(N));
+    dim3 threads_per_block = dim3(32,8,1);
     
     for (int i = 0; i < iter_max; i++) {
         temp_uold = u_old_d;

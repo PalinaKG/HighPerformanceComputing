@@ -1,0 +1,59 @@
+#!/bin/bash
+# 02614 - High-Performance Computing, January 2022
+# 
+# batch script to run matmult on a decidated server in the hpcintro
+# queue
+#
+# Author: Bernd Dammann <bd@cc.dtu.dk>
+#
+#BSUB -J jac_naive_batch
+#BSUB -o jac_naive_batch%J.out
+#BSUB -q hpcintrogpu
+#BSUB -n 1
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -R "rusage[mem=20GB]"
+#BSUB -W 60
+
+EXECUTABLE=jacobi
+
+module load cuda/11.5.1
+module load gcc/10.3.0-binutils-2.36.1
+
+# grid sizes
+#
+SIZES="20 50 100 200 300 400 512 640 780 1024"
+
+#max number of iterations
+
+ITER="1000"
+
+#tolerance
+
+TOL="0.01"
+
+#start T
+
+TSTART="10"
+
+#output type
+
+OTYPE="4"
+
+#function to run
+# 2 for naive type
+FUNCTYPE="2"
+
+# start the collect command with the above settings
+lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)|cache'
+/appl/cuda/11.5.1/samples/bin/x86_64/linux/release/deviceQuery
+nvidia-smi
+module load gcc
+
+make clean
+make OPT="-g -Ofast -funsafe-loop-optimizations"
+FILE_NAME="jacobi_naive.dat"
+rm  Data/Jacobi_naive/$FILE_NAME
+for S in $SIZES
+do
+	./$EXECUTABLE $S $ITER $TOL $TSTART $OTYPE $FUNCTYPE  | grep -v CPU >> Data/Jacobi_naive/$FILE_NAME
+done
