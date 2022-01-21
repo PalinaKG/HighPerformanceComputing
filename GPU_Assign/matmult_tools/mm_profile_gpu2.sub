@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+#BSUB -J mm_profile 
+#BSUB -o mm_profile_%J.out
+#BSUB -q hpcintrogpu 
+#BSUB -n 4 
+#BSUB -R "span[hosts=1]"  
+#BSUB -gpu "num=1:mode=exclusive_process"  
+#BSUB -W 10 
+#BSUB -R "rusage[mem=2048]"  
+ 
+export TMPDIR=$__LSF_JOB_TMPDIR__ 
+export MFLOPS_MAX_IT=1  
+
+module load cuda/11.5.1 
+module load gcc/10.3.0-binutils-2.36.1
+make clean
+make
+ 
+TMPDIR=. nsys profile matmult_f.nvcc gpu2 100 100 100
+

@@ -1,0 +1,24 @@
+#BSUB -J proftest 
+#BSUB -q hpcintrogpu 
+#BSUB -n 4 
+#BSUB -R "span[hosts=1]"  
+#BSUB -gpu "num=1:mode=exclusive_process"  
+#BSUB -W 10 
+#BSUB -R "rusage[mem=2048]"  
+ 
+export TMPDIR=$__LSF_JOB_TMPDIR__ 
+module load cuda/11.5.1
+module load gcc/10.3.0-binutils-2.36.1 
+export MFLOPS_MAX_IT=1  
+
+make clean
+make
+ 
+nv-nsight-cu-cli -o profile_gpu2_$LSB_JOBID --section MemoryWorkloadAnalysis --section MemoryWorkloadAnalysis_Chart --section ComputeWorkloadAnalysis --section SpeedOfLight ./matmult_f.nvcc gpu2 1000 1000 1000
+
+ 
+nv-nsight-cu-cli -o profile_gpu3_$LSB_JOBID --section MemoryWorkloadAnalysis --section MemoryWorkloadAnalysis_Chart --section ComputeWorkloadAnalysis --section SpeedOfLight./matmult_f.nvcc gpu3 1000 1000 1000
+
+nv-nsight-cu-cli -o profile_gpu4_$LSB_JOBID --section MemoryWorkloadAnalysis --section MemoryWorkloadAnalysis_Chart --section ComputeWorkloadAnalysis --section SpeedOfLight./matmult_f.nvcc gpu4 1000 1000 1000
+
+nv-nsight-cu-cli -o profile_gpu5_$LSB_JOBID --section MemoryWorkloadAnalysis --section MemoryWorkloadAnalysis_Chart --section ComputeWorkloadAnalysis --section SpeedOfLight./matmult_f.nvcc gpu5 1000 1000 1000
