@@ -13,16 +13,16 @@ import matplotlib.pyplot as plt
 
 #data_ref = np.loadtxt("Data/Jacobi_naive/jacobi_naive.dat",unpack=True)
 data_naive = np.loadtxt("Data/Jacobi_naive/jacobi_naive.dat",unpack=True)
-data_ref = np.loadtxt("Data/Jacobi_ref/jacobi_ref.dat",unpack=True)
+data_ref = np.loadtxt("Data/Jacobi_ref/jacobi_ref2.dat",unpack=True)
 
 
-#N_ref = data_ref[3]
+N_ref = data_ref[3]
 N_naive = data_naive[3]
 
 
-#flops_ref = data_ref[5]
-#time_ref = data_ref[2]
-#iterations_ref = data_ref[4]
+flops_ref = data_ref[5]
+time_ref = data_ref[2]
+iterations_ref = data_ref[4]
 
 flops_naive = data_naive[5]
 time_naive = data_naive[2]
@@ -44,7 +44,7 @@ plt.title("")
 plt.xlabel("N, grid size")
 plt.ylabel("Performance [Gflops/s]")
 #plt.ylim(0,50)
-plt.legend(["Reference", "Sequential, GPU"]) 
+plt.legend(["Naive, GPU", "Reference, 24 thread"]) 
     
 plt.show()
 
