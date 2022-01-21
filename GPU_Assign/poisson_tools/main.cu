@@ -94,7 +94,7 @@ main(int argc, char *argv[]) {
         jacobi_multi(f_h, u_h, u_old_h, N, iter_max);
     }
     else if(func_type == 4){
-	jacobi_stop(f_h, u_h, u_old_h, N, iter_max,tolerance);
+	    jacobi_stop(f_h, u_h, u_old_h, N, iter_max,tolerance);
     }
 
     iter = iter_max;

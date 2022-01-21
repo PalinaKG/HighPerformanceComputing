@@ -463,7 +463,7 @@ void jacobi_stop(double ***f_h, double ***u_h, double ***u_old_h, int N, int ite
         cudaDeviceSynchronize();
 		cudaMemcpy(d_h,d_d,sizeof(double),cudaMemcpyHostToDevice);
 		
-		printf("%.2f\n",*d_h);
+		//printf("%.2f\n",*d_h);
 		counter = counter + 1;
 	}
 
@@ -495,9 +495,8 @@ __global__ void kernel_stop(int N, double ***f, double ***u, double ***u_old, do
     	+ u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] \
     	+ delta*f[i][j][k]); 
  		
-		value = u[i][j][k] - u_old[i][j][k];
-		//s commenta út því þetta var að stoppa runnið hjá mér
-    //m += (value * value);   
+        value = u[i][j][k] - u_old[i][j][k];
+        sum += (value * value);   
 
 	}
 	sum = SumReduce(sum);
