@@ -81,7 +81,7 @@ main(int argc, char *argv[]) {
 
 
     //the iterations are static and we're always returning the iter_max value
-   /* if(func_type == 0){
+    if(func_type == 0){
         jacobi(f_h, u_h, u_old_h, N, iter_max);
     }
     else if(func_type == 1){
@@ -94,11 +94,8 @@ main(int argc, char *argv[]) {
         jacobi_multi(f_h, u_h, u_old_h, N, iter_max);
     }
     else if(func_type == 4){
-        printf("HI");
 	jacobi_stop(f_h, u_h, u_old_h, N, iter_max,tolerance);
-    }*/
-
-jacobi_stop(f_h, u_h, u_old_h, N, iter_max,tolerance);
+    }
 
     iter = iter_max;
 
