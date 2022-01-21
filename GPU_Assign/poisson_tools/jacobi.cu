@@ -383,7 +383,7 @@ __global__ void kernel_gpu1(int N, double ***f, double ***u, double ***u_old, do
     k = blockIdx.z * blockDim.z + threadIdx.z;
 
 
-    if(i>= 0 && j>0 && k>0 && j<(N+1) && k<(N+1) && i < ((N+2)/2)-1){
+    if(i>= 0 && j>0 && k>0 && j<(N+1) && k<(N+1) && i < ((N)/2)-1){
         u[i][j][k]= u_old[i+1][j][k] + u_old[i][j-1][k] \
         + u_old[i][j+1][k] + u_old[i][j][k-1] + u_old[i][j][k+1] \
         + delta*f[i][j][k]; 
